@@ -1,0 +1,746 @@
+
+OCIO Version: 2.4.1
+
+OCIO Config. file:    '/net/homes/kwheatle/Downloads/studio-config-aces-v1-and-v2.ocio'
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+
+Processing statistics:
+
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
+Create the config identifier:		For 10 iterations, it took: [4.19772, 0.000183688, 0.419937] ms
+Create the context identifier:		For 10 iterations, it took: [0.000615, 9.73333e-05, 0.0001491] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.448062, 0.106348, 0.14052] ms
+Create the optimized processor:		For 10 iterations, it took: [0.029948, 0.000576111, 0.0035133] ms
+Create the GPU processor:		For 10 iterations, it took: [0.084649, 0.000174555, 0.008622] ms
+Create the GPU shader:			For 10 iterations, it took: [0.359891, 0.307816, 0.313024] ms
+Create the CPU processor:		For 10 iterations, it took: [0.078593, 0.000601333, 0.0084005] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [1087.37, 1082.31, 1082.82] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [1085.76, 1085.87, 1085.86] ms
+
+
+
+OCIO Version: 2.4.1
+
+OCIO Config. file:    '/net/homes/kwheatle/Downloads/studio-config-aces-v1-and-v2.ocio'
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+
+Processing statistics:
+
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
+Create the config identifier:		For 10 iterations, it took: [4.07807, 0.000170125, 0.40796] ms
+Create the context identifier:		For 10 iterations, it took: [0.000584, 9.43333e-05, 0.0001433] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.453333, 0.105456, 0.140244] ms
+Create the optimized processor:		For 10 iterations, it took: [0.031962, 0.000541778, 0.0036838] ms
+Create the GPU processor:		For 10 iterations, it took: [0.081861, 0.000164445, 0.0083341] ms
+Create the GPU shader:			For 10 iterations, it took: [0.359398, 0.296722, 0.30299] ms
+Create the CPU processor:		For 10 iterations, it took: [0.076161, 0.000580111, 0.0081382] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [1080.51, 1081.21, 1081.14] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [1084.27, 1084.98, 1084.91] ms
+
+
+
+OCIO Version: 2.4.1
+
+OCIO Config. file:    '/net/homes/kwheatle/Downloads/studio-config-aces-v1-and-v2.ocio'
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+
+Processing statistics:
+
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
+Create the config identifier:		For 10 iterations, it took: [4.03121, 0.000172562, 0.403277] ms
+Create the context identifier:		For 10 iterations, it took: [0.000534, 9.46667e-05, 0.0001386] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.440943, 0.105164, 0.138741] ms
+Create the optimized processor:		For 10 iterations, it took: [0.030523, 0.000557777, 0.0035543] ms
+Create the GPU processor:		For 10 iterations, it took: [0.081242, 0.000167112, 0.0082746] ms
+Create the GPU shader:			For 10 iterations, it took: [0.355274, 0.296272, 0.302172] ms
+Create the CPU processor:		For 10 iterations, it took: [0.078278, 0.000578333, 0.0083483] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [1090.78, 1086.29, 1086.74] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [1088.42, 1089.51, 1089.4] ms
+
+
+
+OCIO Version: 2.4.2
+
+
+Processing statistics:
+
+
+Loading $OCIO /net/homes/kwheatle/Downloads/studio-config-aces-v1-and-v2.ocio
+
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
+Create the config identifier:		For 10 iterations, it took: [13.437, 0.000526534, 1.34418] ms
+Create the context identifier:		For 10 iterations, it took: [0.001593, 0.000261556, 0.0003947] ms
+Create the (display, view) processor:	For 10 iterations, it took: [2.51324, 0.229055, 0.457473] ms
+Create the optimized processor:		For 10 iterations, it took: [0.066021, 0.00131511, 0.0077857] ms
+Create the GPU processor:		For 10 iterations, it took: [0.163753, 0.000367557, 0.0167061] ms
+Create the GPU shader:			For 10 iterations, it took: [0.781059, 0.595148, 0.613739] ms
+Create the CPU processor:		For 10 iterations, it took: [0.145163, 0.00113278, 0.0155358] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [1083.79, 1084.51, 1084.44] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [1087.66, 1088.44, 1088.36] ms
+
+
+
+OCIO Version: 2.4.2
+
+
+Processing statistics:
+
+
+Loading $OCIO /net/homes/kwheatle/Downloads/studio-config-aces-v1-and-v2.ocio
+
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
+Create the config identifier:		For 10 iterations, it took: [3.96884, 0.000196351, 0.397061] ms
+Create the context identifier:		For 10 iterations, it took: [0.000589, 9.31111e-05, 0.0001427] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.453676, 0.101592, 0.136801] ms
+Create the optimized processor:		For 10 iterations, it took: [0.031946, 0.000606555, 0.0037405] ms
+Create the GPU processor:		For 10 iterations, it took: [0.072065, 0.000161111, 0.0073515] ms
+Create the GPU shader:			For 10 iterations, it took: [0.362216, 0.297493, 0.303966] ms
+Create the CPU processor:		For 10 iterations, it took: [0.078048, 0.00057789, 0.0083249] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [1085.59, 1084.21, 1084.35] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [1089.25, 1090.43, 1090.31] ms
+
+
+
+OCIO Version: 2.4.2
+
+
+Processing statistics:
+
+
+Loading $OCIO /net/homes/kwheatle/Downloads/studio-config-aces-v1-and-v2.ocio
+
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
+Create the config identifier:		For 10 iterations, it took: [4.00992, 0.000189357, 0.401162] ms
+Create the context identifier:		For 10 iterations, it took: [0.000608, 9.56667e-05, 0.0001469] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.443674, 0.103015, 0.137081] ms
+Create the optimized processor:		For 10 iterations, it took: [0.030555, 0.000571556, 0.0035699] ms
+Create the GPU processor:		For 10 iterations, it took: [0.085481, 0.000161223, 0.0086932] ms
+Create the GPU shader:			For 10 iterations, it took: [0.35357, 0.300262, 0.305592] ms
+Create the CPU processor:		For 10 iterations, it took: [0.078139, 0.000571445, 0.0083282] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [1094.13, 1099.02, 1098.53] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [1101.56, 1106.51, 1106.02] ms
+
+
+
+OCIO Version: 2.4.1
+
+OCIO Config. file:    '/net/homes/kwheatle/Downloads/studio-config-aces-v1-and-v2.ocio'
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+
+Processing statistics:
+
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 2.0 - SDR 100 nits (Rec.709))'
+Create the config identifier:		For 10 iterations, it took: [4.11733, 0.000180085, 0.411896] ms
+Create the context identifier:		For 10 iterations, it took: [0.000619, 9.63333e-05, 0.0001486] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.33177, 0.0883686, 0.112709] ms
+Create the optimized processor:		For 10 iterations, it took: [0.024945, 0.000540444, 0.0029809] ms
+Create the GPU processor:		For 10 iterations, it took: [0.046267, 0.000169445, 0.0047792] ms
+Create the GPU shader:			For 10 iterations, it took: [11.2485, 11.1367, 11.1479] ms
+Create the CPU processor:		For 10 iterations, it took: [10.5927, 0.000570933, 1.05979] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [10061.5, 10159.5, 10149.7] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [10054.6, 10057.3, 10057.1] ms
+
+
+
+OCIO Version: 2.4.1
+
+OCIO Config. file:    '/net/homes/kwheatle/Downloads/studio-config-aces-v1-and-v2.ocio'
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+
+Processing statistics:
+
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 2.0 - SDR 100 nits (Rec.709))'
+Create the config identifier:		For 10 iterations, it took: [4.1463, 0.000179291, 0.414792] ms
+Create the context identifier:		For 10 iterations, it took: [0.000618, 9.4e-05, 0.0001464] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.337522, 0.0885424, 0.11344] ms
+Create the optimized processor:		For 10 iterations, it took: [0.025703, 0.000552667, 0.0030677] ms
+Create the GPU processor:		For 10 iterations, it took: [0.046506, 0.000174222, 0.0048074] ms
+Create the GPU shader:			For 10 iterations, it took: [11.2753, 11.1417, 11.155] ms
+Create the CPU processor:		For 10 iterations, it took: [10.5906, 0.000578774, 1.05958] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [10097.2, 10063, 10066.4] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [10058.1, 10165.1, 10154.4] ms
+
+
+
+OCIO Version: 2.4.1
+
+OCIO Config. file:    '/net/homes/kwheatle/Downloads/studio-config-aces-v1-and-v2.ocio'
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+
+Processing statistics:
+
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 2.0 - SDR 100 nits (Rec.709))'
+Create the config identifier:		For 10 iterations, it took: [4.10825, 0.000178973, 0.410986] ms
+Create the context identifier:		For 10 iterations, it took: [0.000585, 9.5e-05, 0.000144] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.315063, 0.0885952, 0.111242] ms
+Create the optimized processor:		For 10 iterations, it took: [0.022965, 0.000530222, 0.0027737] ms
+Create the GPU processor:		For 10 iterations, it took: [0.046088, 0.000168333, 0.0047603] ms
+Create the GPU shader:			For 10 iterations, it took: [11.3068, 11.1898, 11.2015] ms
+Create the CPU processor:		For 10 iterations, it took: [10.697, 0.000569661, 1.07022] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [10067.8, 10067, 10067.1] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [10118.4, 10074.3, 10078.7] ms
+
+
+
+OCIO Version: 2.4.2
+
+
+Processing statistics:
+
+
+Loading $OCIO /net/homes/kwheatle/Downloads/studio-config-aces-v1-and-v2.ocio
+
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 2.0 - SDR 100 nits (Rec.709))'
+Create the config identifier:		For 10 iterations, it took: [4.06347, 0.000201066, 0.406528] ms
+Create the context identifier:		For 10 iterations, it took: [0.000601, 9.55556e-05, 0.0001461] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.332512, 0.0881395, 0.112577] ms
+Create the optimized processor:		For 10 iterations, it took: [0.023605, 0.000567777, 0.0028715] ms
+Create the GPU processor:		For 10 iterations, it took: [0.035454, 0.000166555, 0.0036953] ms
+Create the GPU shader:			For 10 iterations, it took: [14.998, 14.8322, 14.8488] ms
+Create the CPU processor:		For 10 iterations, it took: [14.3995, 0.000589689, 1.44048] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [8932.15, 9046.72, 9035.27] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [8960.56, 8942.38, 8944.2] ms
+
+
+
+OCIO Version: 2.4.2
+
+
+Processing statistics:
+
+
+Loading $OCIO /net/homes/kwheatle/Downloads/studio-config-aces-v1-and-v2.ocio
+
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 2.0 - SDR 100 nits (Rec.709))'
+Create the config identifier:		For 10 iterations, it took: [4.214, 0.000196669, 0.421577] ms
+Create the context identifier:		For 10 iterations, it took: [0.000591, 9.54445e-05, 0.000145] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.32398, 0.0970728, 0.119763] ms
+Create the optimized processor:		For 10 iterations, it took: [0.02281, 0.000542333, 0.0027691] ms
+Create the GPU processor:		For 10 iterations, it took: [0.034334, 0.000162334, 0.0035795] ms
+Create the GPU shader:			For 10 iterations, it took: [15.0556, 14.7997, 14.8253] ms
+Create the CPU processor:		For 10 iterations, it took: [14.3074, 0.000584602, 1.43127] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [8934.19, 8931.41, 8931.69] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [8932.04, 8968.03, 8964.43] ms
+
+
+
+OCIO Version: 2.4.2
+
+
+Processing statistics:
+
+
+Loading $OCIO /net/homes/kwheatle/Downloads/studio-config-aces-v1-and-v2.ocio
+
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 2.0 - SDR 100 nits (Rec.709))'
+Create the config identifier:		For 10 iterations, it took: [4.11198, 0.000205199, 0.411383] ms
+Create the context identifier:		For 10 iterations, it took: [0.000585, 9.56667e-05, 0.0001446] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.324221, 0.0923477, 0.115535] ms
+Create the optimized processor:		For 10 iterations, it took: [0.022468, 0.000558555, 0.0027495] ms
+Create the GPU processor:		For 10 iterations, it took: [0.034995, 0.000165222, 0.0036482] ms
+Create the GPU shader:			For 10 iterations, it took: [15.2261, 15.2397, 15.2383] ms
+Create the CPU processor:		For 10 iterations, it took: [15.9838, 0.00061014, 1.59893] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [9546.29, 8960.35, 9018.95] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [8935.9, 8967.33, 8964.19] ms
+
+
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 3813.507
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 0
+cpu cores	: 8
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 4806.475
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 1
+cpu cores	: 8
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 4819.152
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 2
+cpu cores	: 8
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 4846.020
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 3
+cpu cores	: 8
+apicid		: 6
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 4
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 4281.042
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 4
+cpu cores	: 8
+apicid		: 8
+initial apicid	: 8
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 5
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 3714.172
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 5
+cpu cores	: 8
+apicid		: 10
+initial apicid	: 10
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 6
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 2703.985
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 6
+cpu cores	: 8
+apicid		: 12
+initial apicid	: 12
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 7
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 2008.074
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 7
+cpu cores	: 8
+apicid		: 14
+initial apicid	: 14
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 8
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 2388.006
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 0
+cpu cores	: 8
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 9
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 4416.137
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 1
+cpu cores	: 8
+apicid		: 3
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 10
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 4708.843
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 2
+cpu cores	: 8
+apicid		: 5
+initial apicid	: 5
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 11
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 4999.847
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 3
+cpu cores	: 8
+apicid		: 7
+initial apicid	: 7
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 12
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 4132.324
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 4
+cpu cores	: 8
+apicid		: 9
+initial apicid	: 9
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 13
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 3277.099
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 5
+cpu cores	: 8
+apicid		: 11
+initial apicid	: 11
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 14
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 4122.106
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 6
+cpu cores	: 8
+apicid		: 13
+initial apicid	: 13
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 15
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz
+stepping	: 13
+microcode	: 0xd6
+cpu MHz		: 4947.436
+cache size	: 16384 KB
+physical id	: 0
+siblings	: 16
+core id		: 7
+cpu cores	: 8
+apicid		: 15
+initial apicid	: 15
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear spec_ctrl intel_stibp flush_l1d arch_capabilities
+bogomips	: 6192.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+

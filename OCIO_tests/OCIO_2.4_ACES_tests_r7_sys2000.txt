@@ -1,0 +1,850 @@
+
+OCIO Version: 2.4.1
+
+OCIO Config. file:    './Downloads/studio-config-aces-v1-and-v2.ocio'
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+
+Processing statistics:
+
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
+Create the config identifier:		For 10 iterations, it took: [11.5038, 0.000503964, 1.15083] ms
+Create the context identifier:		For 10 iterations, it took: [0.00184, 0.000244333, 0.0004039] ms
+Create the (display, view) processor:	For 10 iterations, it took: [1.32444, 0.287473, 0.391169] ms
+Create the optimized processor:		For 10 iterations, it took: [0.095233, 0.00154867, 0.0109171] ms
+Create the GPU processor:		For 10 iterations, it took: [0.182612, 0.000436889, 0.0186544] ms
+Create the GPU shader:			For 10 iterations, it took: [0.980319, 0.827728, 0.842987] ms
+Create the CPU processor:		For 10 iterations, it took: [0.215208, 0.00159789, 0.0229589] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [1690.81, 1625.32, 1631.86] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [1602.06, 1626.86, 1624.38] ms
+
+
+
+OCIO Version: 2.4.1
+
+OCIO Config. file:    './Downloads/studio-config-aces-v1-and-v2.ocio'
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+
+Processing statistics:
+
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
+Create the config identifier:		For 10 iterations, it took: [5.93636, 0.000265651, 0.593876] ms
+Create the context identifier:		For 10 iterations, it took: [0.000927, 0.000133111, 0.0002125] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.663758, 0.149541, 0.200963] ms
+Create the optimized processor:		For 10 iterations, it took: [0.062823, 0.000909221, 0.0071006] ms
+Create the GPU processor:		For 10 iterations, it took: [0.118884, 0.000239443, 0.0121039] ms
+Create the GPU shader:			For 10 iterations, it took: [0.518286, 0.45135, 0.458044] ms
+Create the CPU processor:		For 10 iterations, it took: [0.114808, 0.000907, 0.0122971] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [1633.72, 1639.9, 1639.28] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [1682.08, 1720.68, 1716.82] ms
+
+
+
+OCIO Version: 2.4.1
+
+OCIO Config. file:    './Downloads/studio-config-aces-v1-and-v2.ocio'
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+
+Processing statistics:
+
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
+Create the config identifier:		For 10 iterations, it took: [6.18265, 0.000268777, 0.618507] ms
+Create the context identifier:		For 10 iterations, it took: [0.000915, 0.000131556, 0.0002099] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.707365, 0.163369, 0.217768] ms
+Create the optimized processor:		For 10 iterations, it took: [0.049647, 0.000857556, 0.0057365] ms
+Create the GPU processor:		For 10 iterations, it took: [0.100007, 0.000239666, 0.0102164] ms
+Create the GPU shader:			For 10 iterations, it took: [0.560968, 0.477986, 0.486284] ms
+Create the CPU processor:		For 10 iterations, it took: [0.120165, 0.000921667, 0.012846] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [1591.38, 1611.45, 1609.44] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [1605.59, 1605.29, 1605.32] ms
+
+
+
+OCIO Version: 2.4.2
+
+
+Processing statistics:
+
+
+Loading $OCIO ./Downloads/studio-config-aces-v1-and-v2.ocio
+
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
+Create the config identifier:		For 10 iterations, it took: [13.172, 0.000585132, 1.31772] ms
+Create the context identifier:		For 10 iterations, it took: [0.002135, 0.000276889, 0.0004627] ms
+Create the (display, view) processor:	For 10 iterations, it took: [1.46074, 0.330247, 0.443296] ms
+Create the optimized processor:		For 10 iterations, it took: [0.098935, 0.00189689, 0.0116007] ms
+Create the GPU processor:		For 10 iterations, it took: [0.240338, 0.000553331, 0.0245318] ms
+Create the GPU shader:			For 10 iterations, it took: [1.16761, 0.944574, 0.966877] ms
+Create the CPU processor:		For 10 iterations, it took: [0.252221, 0.00181689, 0.0268573] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [1669.75, 1601.17, 1608.03] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [1601.4, 1631.26, 1628.27] ms
+
+
+
+OCIO Version: 2.4.2
+
+
+Processing statistics:
+
+
+Loading $OCIO ./Downloads/studio-config-aces-v1-and-v2.ocio
+
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
+Create the config identifier:		For 10 iterations, it took: [6.25496, 0.000290818, 0.625758] ms
+Create the context identifier:		For 10 iterations, it took: [0.001014, 0.000142222, 0.0002294] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.729483, 0.164117, 0.220654] ms
+Create the optimized processor:		For 10 iterations, it took: [0.063292, 0.000983999, 0.0072148] ms
+Create the GPU processor:		For 10 iterations, it took: [0.11768, 0.00027511, 0.0120156] ms
+Create the GPU shader:			For 10 iterations, it took: [0.566528, 0.483819, 0.49209] ms
+Create the CPU processor:		For 10 iterations, it took: [0.1268, 0.000958999, 0.0135431] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [1719.59, 1646.09, 1653.44] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [1715.14, 1658.73, 1664.37] ms
+
+
+
+OCIO Version: 2.4.2
+
+
+Processing statistics:
+
+
+Loading $OCIO ./Downloads/studio-config-aces-v1-and-v2.ocio
+
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
+Create the config identifier:		For 10 iterations, it took: [6.03349, 0.000272804, 0.603594] ms
+Create the context identifier:		For 10 iterations, it took: [0.000976, 0.000136556, 0.0002205] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.691698, 0.157639, 0.211045] ms
+Create the optimized processor:		For 10 iterations, it took: [0.046852, 0.000895556, 0.0054912] ms
+Create the GPU processor:		For 10 iterations, it took: [0.111531, 0.000248667, 0.0113769] ms
+Create the GPU shader:			For 10 iterations, it took: [0.592311, 0.457617, 0.471086] ms
+Create the CPU processor:		For 10 iterations, it took: [0.12027, 0.000898555, 0.0128357] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [1599.56, 1618.41, 1616.53] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [1597.95, 1627.51, 1624.55] ms
+
+
+
+OCIO Version: 2.4.1
+
+OCIO Config. file:    './Downloads/studio-config-aces-v1-and-v2.ocio'
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+
+Processing statistics:
+
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 2.0 - SDR 100 nits (Rec.709))'
+Create the config identifier:		For 10 iterations, it took: [12.0612, 0.000515196, 1.20658] ms
+Create the context identifier:		For 10 iterations, it took: [0.00186, 0.000247, 0.0004083] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.954578, 0.251459, 0.321771] ms
+Create the optimized processor:		For 10 iterations, it took: [0.077084, 0.00156311, 0.0091152] ms
+Create the GPU processor:		For 10 iterations, it took: [0.094835, 0.000456445, 0.0098943] ms
+Create the GPU shader:			For 10 iterations, it took: [27.8612, 19.7723, 20.5812] ms
+Create the CPU processor:		For 10 iterations, it took: [16.7121, 0.0010749, 1.67218] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [14393.9, 14276.4, 14288.1] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [14448.3, 14331.9, 14343.6] ms
+
+
+
+OCIO Version: 2.4.1
+
+OCIO Config. file:    './Downloads/studio-config-aces-v1-and-v2.ocio'
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+
+Processing statistics:
+
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 2.0 - SDR 100 nits (Rec.709))'
+Create the config identifier:		For 10 iterations, it took: [5.93846, 0.000272751, 0.594091] ms
+Create the context identifier:		For 10 iterations, it took: [0.001012, 0.000139, 0.0002263] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.510542, 0.130053, 0.168102] ms
+Create the optimized processor:		For 10 iterations, it took: [0.03713, 0.000796889, 0.0044302] ms
+Create the GPU processor:		For 10 iterations, it took: [0.043998, 0.000228223, 0.0046052] ms
+Create the GPU shader:			For 10 iterations, it took: [15.7357, 15.6959, 15.6998] ms
+Create the CPU processor:		For 10 iterations, it took: [14.8225, 0.000883632, 1.48305] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [14461.8, 14521.3, 14515.3] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [14772.7, 14591.9, 14610] ms
+
+
+
+OCIO Version: 2.4.1
+
+OCIO Config. file:    './Downloads/studio-config-aces-v1-and-v2.ocio'
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+
+Processing statistics:
+
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 2.0 - SDR 100 nits (Rec.709))'
+Create the config identifier:		For 10 iterations, it took: [5.98052, 0.000259664, 0.598286] ms
+Create the context identifier:		For 10 iterations, it took: [0.00096, 0.000127667, 0.0002109] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.486684, 0.135316, 0.170453] ms
+Create the optimized processor:		For 10 iterations, it took: [0.042759, 0.000878, 0.0050661] ms
+Create the GPU processor:		For 10 iterations, it took: [0.045826, 0.000234667, 0.0047938] ms
+Create the GPU shader:			For 10 iterations, it took: [15.9769, 15.5945, 15.6327] ms
+Create the CPU processor:		For 10 iterations, it took: [14.7774, 0.000910123, 1.47856] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [14412.5, 14323.2, 14332.1] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [14359.6, 14450.8, 14441.7] ms
+
+
+
+OCIO Version: 2.4.2
+
+
+Processing statistics:
+
+
+Loading $OCIO ./Downloads/studio-config-aces-v1-and-v2.ocio
+
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 2.0 - SDR 100 nits (Rec.709))'
+Create the config identifier:		For 10 iterations, it took: [6.17059, 0.000290765, 0.617321] ms
+Create the context identifier:		For 10 iterations, it took: [0.001145, 0.000141778, 0.0002421] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.519971, 0.139834, 0.177847] ms
+Create the optimized processor:		For 10 iterations, it took: [0.036914, 0.00086, 0.0044654] ms
+Create the GPU processor:		For 10 iterations, it took: [0.055509, 0.000251778, 0.0057775] ms
+Create the GPU shader:			For 10 iterations, it took: [21.7075, 20.7409, 20.8376] ms
+Create the CPU processor:		For 10 iterations, it took: [19.4343, 0.000870387, 1.94421] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [12478.7, 12502, 12499.6] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [12681, 12598.2, 12606.5] ms
+
+
+
+OCIO Version: 2.4.2
+
+
+Processing statistics:
+
+
+Loading $OCIO ./Downloads/studio-config-aces-v1-and-v2.ocio
+
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 2.0 - SDR 100 nits (Rec.709))'
+Create the config identifier:		For 10 iterations, it took: [5.95344, 0.000275877, 0.595592] ms
+Create the context identifier:		For 10 iterations, it took: [0.001056, 0.000134444, 0.0002266] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.496187, 0.134874, 0.171006] ms
+Create the optimized processor:		For 10 iterations, it took: [0.033864, 0.000835334, 0.0041382] ms
+Create the GPU processor:		For 10 iterations, it took: [0.053231, 0.000246445, 0.0055449] ms
+Create the GPU shader:			For 10 iterations, it took: [20.8935, 20.8724, 20.8745] ms
+Create the CPU processor:		For 10 iterations, it took: [20.5334, 0.000956429, 2.0542] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [12515.1, 12528.6, 12527.2] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [12430.7, 12576.7, 12562.1] ms
+
+
+
+OCIO Version: 2.4.2
+
+
+Processing statistics:
+
+
+Loading $OCIO ./Downloads/studio-config-aces-v1-and-v2.ocio
+
+OCIO Config. version: 2.4
+OCIO search_path:     
+
+Processing from 'ACES2065-1' to '(sRGB - Display, ACES 2.0 - SDR 100 nits (Rec.709))'
+Create the config identifier:		For 10 iterations, it took: [6.04568, 0.000273493, 0.604814] ms
+Create the context identifier:		For 10 iterations, it took: [0.001071, 0.000133667, 0.0002274] ms
+Create the (display, view) processor:	For 10 iterations, it took: [0.493563, 0.132467, 0.168576] ms
+Create the optimized processor:		For 10 iterations, it took: [0.035064, 0.000827111, 0.0042508] ms
+Create the GPU processor:		For 10 iterations, it took: [0.053328, 0.000241, 0.0055497] ms
+Create the GPU shader:			For 10 iterations, it took: [20.6014, 20.1696, 20.2128] ms
+Create the CPU processor:		For 10 iterations, it took: [19.421, 0.000890308, 1.9429] ms
+
+
+Image processing statistics:
+
+Process the complete image (in place):				For 10 iterations, it took: [12606.5, 12765.6, 12749.7] ms
+Process the complete image (two buffers):			For 10 iterations, it took: [12874.7, 12746.9, 12759.7] ms
+
+
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1227.966
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 0
+cpu cores	: 10
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1284.539
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 1
+cpu cores	: 10
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 3216.552
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 2
+cpu cores	: 10
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1199.963
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 3
+cpu cores	: 10
+apicid		: 6
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 4
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1216.424
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 4
+cpu cores	: 10
+apicid		: 8
+initial apicid	: 8
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 5
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1199.963
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 8
+cpu cores	: 10
+apicid		: 16
+initial apicid	: 16
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 6
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1199.963
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 9
+cpu cores	: 10
+apicid		: 18
+initial apicid	: 18
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 7
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1483.587
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 10
+cpu cores	: 10
+apicid		: 20
+initial apicid	: 20
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 8
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1274.133
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 11
+cpu cores	: 10
+apicid		: 22
+initial apicid	: 22
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 9
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1199.963
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 12
+cpu cores	: 10
+apicid		: 24
+initial apicid	: 24
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 10
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1200.341
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 0
+cpu cores	: 10
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 11
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1202.801
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 1
+cpu cores	: 10
+apicid		: 3
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 12
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1248.968
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 2
+cpu cores	: 10
+apicid		: 5
+initial apicid	: 5
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 13
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1232.507
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 3
+cpu cores	: 10
+apicid		: 7
+initial apicid	: 7
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 14
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1215.667
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 4
+cpu cores	: 10
+apicid		: 9
+initial apicid	: 9
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 15
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1199.963
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 8
+cpu cores	: 10
+apicid		: 17
+initial apicid	: 17
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 16
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1201.098
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 9
+cpu cores	: 10
+apicid		: 19
+initial apicid	: 19
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 17
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1222.857
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 10
+cpu cores	: 10
+apicid		: 21
+initial apicid	: 21
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 18
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1251.617
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 11
+cpu cores	: 10
+apicid		: 23
+initial apicid	: 23
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 19
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+stepping	: 2
+microcode	: 0x36
+cpu MHz		: 1255.969
+cache size	: 25600 KB
+physical id	: 0
+siblings	: 20
+core id		: 12
+cpu cores	: 10
+apicid		: 25
+initial apicid	: 25
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
+bogomips	: 6186.22
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
