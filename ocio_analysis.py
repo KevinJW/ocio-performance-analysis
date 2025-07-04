@@ -135,6 +135,76 @@ class OCIOAnalyzer:
         logger.info(f"Found {len(self.comparison_data)} CPU-OS combinations for comparison")
         return self.comparison_data
     
+    def find_ocio_version_comparisons(self) -> pd.DataFrame:
+        """
+        Find cases where the same CPU and OS combination has multiple OCIO versions.
+        
+        Returns:
+            DataFrame with OCIO version comparison data
+        """
+        if self.summary_df is None:
+            raise ValueError("Summary data not available. Call summarize_by_filename() first.")
+        
+        # Group by CPU model and OS release to find multiple OCIO versions
+        ocio_comparison_data = []
+        
+        for (cpu_model, os_release), group in self.summary_df.groupby(['cpu_model', 'os_release']):
+            if cpu_model == 'Unknown':
+                continue
+                
+            ocio_versions = group['ocio_version'].unique()
+            if len(ocio_versions) > 1:
+                logger.info(f"Found CPU '{cpu_model}' on OS '{os_release}' with OCIO versions: {ocio_versions}")
+                
+                # Create comparison records for each OCIO version
+                for ocio_version in ocio_versions:
+                    version_data = group[group['ocio_version'] == ocio_version]
+                    
+                    ocio_comparison_data.extend([{
+                        'cpu_model': cpu_model,
+                        'os_release': os_release,
+                        'ocio_version': ocio_version,
+                        'file_count': len(version_data),
+                        'mean_avg_time': version_data['mean_avg_time'].mean(),
+                        'std_avg_time': version_data['mean_avg_time'].std(),
+                        'median_avg_time': version_data['median_avg_time'].mean(),
+                        'total_operations': version_data['total_operations'].sum(),
+                        'files': list(version_data['file_name']),
+                    }])
+        
+        self.ocio_comparison_data = pd.DataFrame(ocio_comparison_data)
+        logger.info(f"Found {len(self.ocio_comparison_data)} CPU-OS-OCIO combinations for comparison")
+        return self.ocio_comparison_data
+    
+    def find_all_ocio_version_comparisons(self) -> pd.DataFrame:
+        """
+        Find all cases where different OCIO versions can be compared.
+        
+        Returns:
+            DataFrame with all OCIO version comparison data
+        """
+        if self.summary_df is None:
+            raise ValueError("Summary data not available. Call summarize_by_filename() first.")
+        
+        # Group by OCIO version and calculate overall statistics
+        all_ocio_comparison_data = []
+        
+        for ocio_version, group in self.summary_df.groupby('ocio_version'):
+            all_ocio_comparison_data.append({
+                'ocio_version': ocio_version,
+                'file_count': len(group),
+                'mean_avg_time': group['mean_avg_time'].mean(),
+                'std_avg_time': group['mean_avg_time'].std(),
+                'median_avg_time': group['median_avg_time'].mean(),
+                'total_operations': group['total_operations'].sum(),
+                'cpu_models': list(group['cpu_model'].unique()),
+                'os_releases': list(group['os_release'].unique()),
+            })
+        
+        self.all_ocio_comparison_data = pd.DataFrame(all_ocio_comparison_data)
+        logger.info(f"Found {len(self.all_ocio_comparison_data)} OCIO versions for overall comparison")
+        return self.all_ocio_comparison_data
+    
     def create_summary_plots(self, output_dir: Path) -> None:
         """
         Create summary visualization plots.
@@ -342,6 +412,146 @@ class OCIOAnalyzer:
         
         logger.info(f"Detailed comparison report saved to {report_file}")
     
+    def create_ocio_version_plots(self, output_dir: Path) -> None:
+        """
+        Create OCIO version comparison plots.
+        
+        Args:
+            output_dir: Directory to save plots
+        """
+        output_dir.mkdir(exist_ok=True)
+        
+        if not hasattr(self, 'all_ocio_comparison_data') or self.all_ocio_comparison_data is None:
+            logger.warning("No OCIO version comparison data available")
+            return
+        
+        # Create OCIO version comparison plot
+        fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+        fig.suptitle('OCIO Version Performance Comparison', fontsize=14, fontweight='bold')
+        
+        # Plot 1: Overall performance by OCIO version
+        ax1 = axes[0, 0]
+        ocio_data = self.all_ocio_comparison_data.sort_values('ocio_version')
+        bars1 = ax1.bar(ocio_data['ocio_version'], ocio_data['mean_avg_time'], 
+                       yerr=ocio_data['std_avg_time'], capsize=5, alpha=0.7)
+        ax1.set_title('Mean Performance by OCIO Version')
+        ax1.set_xlabel('OCIO Version')
+        ax1.set_ylabel('Mean Average Time (ms)')
+        ax1.grid(True, alpha=0.3)
+        
+        # Add value labels on bars
+        for bar, value in zip(bars1, ocio_data['mean_avg_time']):
+            ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
+                    f'{value:.1f}', ha='center', va='bottom')
+        
+        # Plot 2: File count by OCIO version
+        ax2 = axes[0, 1]
+        ax2.bar(ocio_data['ocio_version'], ocio_data['file_count'], alpha=0.7, color='orange')
+        ax2.set_title('Number of Test Files by OCIO Version')
+        ax2.set_xlabel('OCIO Version')
+        ax2.set_ylabel('File Count')
+        ax2.grid(True, alpha=0.3)
+        
+        # Plot 3: Total operations by OCIO version
+        ax3 = axes[1, 0]
+        ax3.bar(ocio_data['ocio_version'], ocio_data['total_operations'], alpha=0.7, color='green')
+        ax3.set_title('Total Operations by OCIO Version')
+        ax3.set_xlabel('OCIO Version')
+        ax3.set_ylabel('Total Operations')
+        ax3.grid(True, alpha=0.3)
+        
+        # Plot 4: Performance improvement between versions
+        ax4 = axes[1, 1]
+        if len(ocio_data) >= 2:
+            versions = ocio_data['ocio_version'].tolist()
+            times = ocio_data['mean_avg_time'].tolist()
+            
+            # Calculate relative performance (normalize to first version)
+            if times[0] != 0:
+                relative_perf = [(time / times[0]) * 100 for time in times]
+                colors = ['blue' if perf <= 100 else 'red' for perf in relative_perf]
+                
+                bars4 = ax4.bar(versions, relative_perf, color=colors, alpha=0.7)
+                ax4.set_title('Relative Performance (% of First Version)')
+                ax4.set_xlabel('OCIO Version')
+                ax4.set_ylabel('Relative Performance (%)')
+                ax4.grid(True, alpha=0.3)
+                ax4.axhline(y=100, color='black', linestyle='--', alpha=0.5, label='Baseline')
+                ax4.legend()
+                
+                # Add value labels
+                for bar, value in zip(bars4, relative_perf):
+                    ax4.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1,
+                            f'{value:.1f}%', ha='center', va='bottom')
+        
+        plt.tight_layout()
+        plt.savefig(output_dir / 'ocio_version_comparison.png', dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        logger.info("OCIO version comparison plot saved")
+    
+    def create_detailed_ocio_comparison_report(self, output_dir: Path) -> None:
+        """
+        Create a detailed OCIO version comparison report.
+        
+        Args:
+            output_dir: Directory to save the report
+        """
+        output_dir.mkdir(exist_ok=True)
+        
+        if not hasattr(self, 'all_ocio_comparison_data') or self.all_ocio_comparison_data is None:
+            logger.warning("No OCIO version comparison data available")
+            return
+        
+        report_file = output_dir / 'ocio_version_comparison_report.txt'
+        
+        with open(report_file, 'w') as f:
+            f.write("OCIO Test Results - OCIO Version Performance Comparison Report\n")
+            f.write("=" * 70 + "\n\n")
+            
+            # Summary statistics
+            f.write("SUMMARY STATISTICS\n")
+            f.write("-" * 20 + "\n")
+            f.write(f"Total OCIO versions found: {len(self.all_ocio_comparison_data)}\n")
+            f.write(f"OCIO versions: {list(self.all_ocio_comparison_data['ocio_version'].unique())}\n")
+            
+            # Get overall performance comparison
+            sorted_data = self.all_ocio_comparison_data.sort_values('mean_avg_time')
+            fastest_version = sorted_data.iloc[0]
+            slowest_version = sorted_data.iloc[-1]
+            
+            if fastest_version['mean_avg_time'] != 0:
+                perf_diff = ((slowest_version['mean_avg_time'] - fastest_version['mean_avg_time']) / 
+                           fastest_version['mean_avg_time']) * 100
+                f.write(f"Fastest OCIO version: {fastest_version['ocio_version']} ({fastest_version['mean_avg_time']:.1f} ms)\n")
+                f.write(f"Slowest OCIO version: {slowest_version['ocio_version']} ({slowest_version['mean_avg_time']:.1f} ms)\n")
+                f.write(f"Performance difference: {perf_diff:.1f}%\n\n")
+            
+            # Detailed version comparisons
+            f.write("DETAILED OCIO VERSION ANALYSIS\n")
+            f.write("-" * 35 + "\n")
+            
+            for _, row in self.all_ocio_comparison_data.sort_values('ocio_version').iterrows():
+                f.write(f"\nOCIO Version: {row['ocio_version']}\n")
+                f.write("=" * (len(row['ocio_version']) + 15) + "\n")
+                f.write(f"  Files tested: {row['file_count']}\n")
+                f.write(f"  Mean avg time: {row['mean_avg_time']:.3f} ms\n")
+                f.write(f"  Std deviation: {row['std_avg_time']:.3f} ms\n")
+                f.write(f"  Median time: {row['median_avg_time']:.3f} ms\n")
+                f.write(f"  Total operations: {row['total_operations']}\n")
+                f.write(f"  CPU models tested: {len(row['cpu_models'])}\n")
+                f.write(f"  OS releases tested: {row['os_releases']}\n")
+                f.write(f"  CPU models: {', '.join([cpu for cpu in row['cpu_models'] if cpu != 'Unknown'])}\n")
+                
+                # Calculate relative performance vs fastest
+                if fastest_version['mean_avg_time'] != 0:
+                    rel_perf = (row['mean_avg_time'] / fastest_version['mean_avg_time']) * 100
+                    f.write(f"  Relative performance: {rel_perf:.1f}% of fastest version\n")
+                
+                f.write("\n" + "-" * 50 + "\n")
+        
+        logger.info(f"Detailed OCIO version comparison report saved to {report_file}")
+    
     def run_full_analysis(self, output_dir: Path) -> None:
         """
         Run the complete analysis pipeline.
@@ -357,15 +567,25 @@ class OCIOAnalyzer:
         self.load_data()
         self.summarize_by_filename()
         self.find_cpu_os_comparisons()
+        self.find_ocio_version_comparisons()
+        self.find_all_ocio_version_comparisons()
         
         # Create visualizations
         self.create_summary_plots(output_dir)
         self.create_os_comparison_plots(output_dir)
         self.create_detailed_comparison_report(output_dir)
+        self.create_ocio_version_plots(output_dir)
+        self.create_detailed_ocio_comparison_report(output_dir)
         
         # Save summary data
         self.summary_df.to_csv(output_dir / 'file_summaries.csv', index=False)
         self.comparison_data.to_csv(output_dir / 'os_comparisons.csv', index=False)
+        
+        # Save OCIO version comparison data if available
+        if hasattr(self, 'all_ocio_comparison_data') and self.all_ocio_comparison_data is not None:
+            self.all_ocio_comparison_data.to_csv(output_dir / 'ocio_version_comparisons.csv', index=False)
+        if hasattr(self, 'ocio_comparison_data') and self.ocio_comparison_data is not None:
+            self.ocio_comparison_data.to_csv(output_dir / 'detailed_ocio_comparisons.csv', index=False)
         
         logger.info(f"Analysis complete! Results saved to {output_dir}")
 

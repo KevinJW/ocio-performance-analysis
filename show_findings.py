@@ -66,5 +66,60 @@ def print_key_findings():
         for file in sorted(files):
             print(f"   • {file.name}")
 
+def print_ocio_version_findings():
+    """Print OCIO version comparison findings."""
+    
+    print("\n" + "="*60)
+    print("🔧 OCIO VERSION PERFORMANCE COMPARISON")
+    print("="*60)
+    
+    # Load the OCIO version comparison data
+    ocio_file = Path("analysis_results/ocio_version_comparisons.csv")
+    if not ocio_file.exists():
+        print("❌ OCIO version comparison data not found.")
+        return
+    
+    df = pd.read_csv(ocio_file)
+    
+    if len(df) == 0:
+        print("❌ No OCIO version comparison data available.")
+        return
+    
+    print(f"\n📊 Found {len(df)} OCIO versions in the dataset:")
+    print("-" * 50)
+    
+    # Sort by version for consistent display
+    df_sorted = df.sort_values('ocio_version')
+    
+    for _, row in df_sorted.iterrows():
+        print(f"\n🔧 OCIO Version {row['ocio_version']}")
+        print(f"   📈 Average Performance: {row['mean_avg_time']:.1f} ms")
+        print(f"   📁 Files Tested: {row['file_count']}")
+        print(f"   🔢 Total Operations: {row['total_operations']}")
+        print(f"   🖥️  CPU Models: {len(row['cpu_models'])} different CPUs")
+        print(f"   💽 OS Releases: {row['os_releases']}")
+    
+    # Performance comparison
+    if len(df_sorted) >= 2:
+        fastest = df_sorted.loc[df_sorted['mean_avg_time'].idxmin()]
+        slowest = df_sorted.loc[df_sorted['mean_avg_time'].idxmax()]
+        
+        if fastest['mean_avg_time'] != 0:
+            improvement = ((slowest['mean_avg_time'] - fastest['mean_avg_time']) / 
+                         fastest['mean_avg_time']) * 100
+            
+            print(f"\n🎯 OCIO VERSION PERFORMANCE SUMMARY:")
+            print(f"   🚀 Fastest Version: {fastest['ocio_version']} ({fastest['mean_avg_time']:.1f} ms)")
+            print(f"   🐌 Slowest Version: {slowest['ocio_version']} ({slowest['mean_avg_time']:.1f} ms)")
+            print(f"   📈 Performance Difference: {improvement:.1f}%")
+            
+            if improvement > 10:
+                print(f"   💡 Recommendation: Consider upgrading to OCIO {fastest['ocio_version']} for better performance")
+            elif improvement < 5:
+                print(f"   ✅ Performance is similar across OCIO versions")
+            else:
+                print(f"   ⚖️  Moderate performance difference between versions")
+
 if __name__ == "__main__":
     print_key_findings()
+    print_ocio_version_findings()
