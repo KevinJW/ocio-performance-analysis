@@ -1,0 +1,173 @@
+OCIO Test Results - OS Performance Comparison Report (by ACES Version)
+================================================================================
+
+SUMMARY STATISTICS
+--------------------
+Total file summaries analyzed: 49
+Unique CPU models: 8
+OS releases found: ['r7', 'r9']
+ACES versions found: ['ACES 1.0', 'ACES 2.0']
+CPU models with multiple OS releases: 3
+
+OVERALL ACES VERSION PERFORMANCE
+-----------------------------------
+ACES 1.0: 278.07 ± 64.80 ms
+ACES 2.0: 2004.97 ± 835.67 ms
+ACES 2.0 vs ACES 1.0 difference: +621.0%
+Better performing ACES version: ACES 1.0
+
+DETAILED OS COMPARISONS BY CPU MODEL AND ACES VERSION
+-------------------------------------------------------
+
+CPU Model: Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz
+====================================================
+
+  ACES 1.0:
+  ----------
+    OS Release: r7
+      Files: 2
+      Mean avg time: 278.031 ms
+      Std dev: 1.434 ms
+      Total operations: 48
+      Test files: OCIO_2.4_ACES_tests_r7_sys2718.ldn.vfx.framestore.com.txt, OCIO_2.4_ACES_tests_r7_sys2718.ldn.vfx.framestore.com.txt
+
+    OS Release: r9
+      Files: 2
+      Mean avg time: 216.379 ms
+      Std dev: 6.880 ms
+      Total operations: 43
+      Test files: OCIO_2.4_ACES_tests_r9_sys2665.ldn.vfx.framestore.com.txt, OCIO_2.4_ACES_tests_r9_sys2665.ldn.vfx.framestore.com.txt
+
+    Performance Analysis (ACES 1.0):
+      r7: 278.031 ms
+      r9: 216.379 ms
+      Change: -22.2%
+      Better performing OS: r9
+
+
+  ACES 2.0:
+  ----------
+    OS Release: r7
+      Files: 2
+      Mean avg time: 2373.167 ms
+      Std dev: 358.119 ms
+      Total operations: 50
+      Test files: OCIO_2.4_ACES_tests_r7_sys2718.ldn.vfx.framestore.com.txt, OCIO_2.4_ACES_tests_r7_sys2718.ldn.vfx.framestore.com.txt
+
+    OS Release: r9
+      Files: 2
+      Mean avg time: 935.980 ms
+      Std dev: 208.445 ms
+      Total operations: 40
+      Test files: OCIO_2.4_ACES_tests_r9_sys2665.ldn.vfx.framestore.com.txt, OCIO_2.4_ACES_tests_r9_sys2665.ldn.vfx.framestore.com.txt
+
+    Performance Analysis (ACES 2.0):
+      r7: 2373.167 ms
+      r9: 935.980 ms
+      Change: -60.6%
+      Better performing OS: r9
+
+
+------------------------------------------------------------
+
+CPU Model: Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz
+======================================================
+
+  ACES 1.0:
+  ----------
+    OS Release: r7
+      Files: 2
+      Mean avg time: 364.326 ms
+      Std dev: 0.196 ms
+      Total operations: 54
+      Test files: OCIO_2.4_ACES_tests_r7_sys2000.txt, OCIO_2.4_ACES_tests_r7_sys2000.txt
+
+    OS Release: r9
+      Files: 2
+      Mean avg time: 298.516 ms
+      Std dev: 0.028 ms
+      Total operations: 48
+      Test files: OCIO_2.4_ACES_tests_r9_sys2043.txt, OCIO_2.4_ACES_tests_r9_sys2043.txt
+
+    Performance Analysis (ACES 1.0):
+      r7: 364.326 ms
+      r9: 298.516 ms
+      Change: -18.1%
+      Better performing OS: r9
+
+
+  ACES 2.0:
+  ----------
+    OS Release: r7
+      Files: 2
+      Mean avg time: 3008.660 ms
+      Std dev: 286.632 ms
+      Total operations: 54
+      Test files: OCIO_2.4_ACES_tests_r7_sys2000.txt, OCIO_2.4_ACES_tests_r7_sys2000.txt
+
+    OS Release: r9
+      Files: 2
+      Mean avg time: 1236.378 ms
+      Std dev: 223.315 ms
+      Total operations: 48
+      Test files: OCIO_2.4_ACES_tests_r9_sys2043.txt, OCIO_2.4_ACES_tests_r9_sys2043.txt
+
+    Performance Analysis (ACES 2.0):
+      r7: 3008.660 ms
+      r9: 1236.378 ms
+      Change: -58.9%
+      Better performing OS: r9
+
+
+------------------------------------------------------------
+
+CPU Model: Intel(R) Xeon(R) W-2295 CPU @ 3.00GHz
+=================================================
+
+  ACES 1.0:
+  ----------
+    OS Release: r7
+      Files: 2
+      Mean avg time: 263.422 ms
+      Std dev: 0.253 ms
+      Total operations: 54
+      Test files: OCIO_2.4_ACES_tests_r7_rga001.txt, OCIO_2.4_ACES_tests_r7_rga001.txt
+
+    OS Release: r9
+      Files: 2
+      Mean avg time: 230.274 ms
+      Std dev: 0.927 ms
+      Total operations: 46
+      Test files: OCIO_2.4_ACES_tests_r9_sys2976.txt, OCIO_2.4_ACES_tests_r9_sys2976.txt
+
+    Performance Analysis (ACES 1.0):
+      r7: 263.422 ms
+      r9: 230.274 ms
+      Change: -12.6%
+      Better performing OS: r9
+
+
+  ACES 2.0:
+  ----------
+    OS Release: r7
+      Files: 2
+      Mean avg time: 2299.187 ms
+      Std dev: 188.243 ms
+      Total operations: 54
+      Test files: OCIO_2.4_ACES_tests_r7_rga001.txt, OCIO_2.4_ACES_tests_r7_rga001.txt
+
+    OS Release: r9
+      Files: 2
+      Mean avg time: 813.627 ms
+      Std dev: 144.997 ms
+      Total operations: 49
+      Test files: OCIO_2.4_ACES_tests_r9_sys2976.txt, OCIO_2.4_ACES_tests_r9_sys2976.txt
+
+    Performance Analysis (ACES 2.0):
+      r7: 2299.187 ms
+      r9: 813.627 ms
+      Change: -64.6%
+      Better performing OS: r9
+
+
+------------------------------------------------------------

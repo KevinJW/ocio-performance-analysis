@@ -1,0 +1,13 @@
+cpu_model,aces_version,os_release,file_count,mean_avg_time,std_avg_time,median_avg_time,total_operations,files
+Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz,ACES 1.0,r7,2,278.03060710374996,1.434102017930007,0.30003174999999993,48,"['OCIO_2.4_ACES_tests_r7_sys2718.ldn.vfx.framestore.com.txt', 'OCIO_2.4_ACES_tests_r7_sys2718.ldn.vfx.framestore.com.txt']"
+Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz,ACES 1.0,r9,2,216.3792169773467,6.879500292838061,0.2916599166666666,43,"['OCIO_2.4_ACES_tests_r9_sys2665.ldn.vfx.framestore.com.txt', 'OCIO_2.4_ACES_tests_r9_sys2665.ldn.vfx.framestore.com.txt']"
+Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz,ACES 2.0,r7,2,2373.16656676192,358.11932552474053,2.6294383599166666,50,"['OCIO_2.4_ACES_tests_r7_sys2718.ldn.vfx.framestore.com.txt', 'OCIO_2.4_ACES_tests_r7_sys2718.ldn.vfx.framestore.com.txt']"
+Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz,ACES 2.0,r9,2,935.9800135538563,208.4451767951219,1.4399204294999999,40,"['OCIO_2.4_ACES_tests_r9_sys2665.ldn.vfx.framestore.com.txt', 'OCIO_2.4_ACES_tests_r9_sys2665.ldn.vfx.framestore.com.txt']"
+Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz,ACES 1.0,r7,2,364.3256133439012,0.19646967610536756,0.367126,54,"['OCIO_2.4_ACES_tests_r7_sys2000.txt', 'OCIO_2.4_ACES_tests_r7_sys2000.txt']"
+Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz,ACES 1.0,r9,2,298.515903782743,0.02792192613308216,0.3845696666666666,48,"['OCIO_2.4_ACES_tests_r9_sys2043.txt', 'OCIO_2.4_ACES_tests_r9_sys2043.txt']"
+Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz,ACES 2.0,r7,2,3008.660294394957,286.63163574861545,2.2049721928333335,54,"['OCIO_2.4_ACES_tests_r7_sys2000.txt', 'OCIO_2.4_ACES_tests_r7_sys2000.txt']"
+Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz,ACES 2.0,r9,2,1236.3782703147572,223.3153738857354,2.12127672075,48,"['OCIO_2.4_ACES_tests_r9_sys2043.txt', 'OCIO_2.4_ACES_tests_r9_sys2043.txt']"
+Intel(R) Xeon(R) W-2295 CPU @ 3.00GHz,ACES 1.0,r7,2,263.4221091024691,0.253106085958326,0.27628899999999995,54,"['OCIO_2.4_ACES_tests_r7_rga001.txt', 'OCIO_2.4_ACES_tests_r7_rga001.txt']"
+Intel(R) Xeon(R) W-2295 CPU @ 3.00GHz,ACES 1.0,r9,2,230.2742550380797,0.9267796499186381,0.38679749999999996,46,"['OCIO_2.4_ACES_tests_r9_sys2976.txt', 'OCIO_2.4_ACES_tests_r9_sys2976.txt']"
+Intel(R) Xeon(R) W-2295 CPU @ 3.00GHz,ACES 2.0,r7,2,2299.1869637314444,188.24338206910636,2.2576905866666666,54,"['OCIO_2.4_ACES_tests_r7_rga001.txt', 'OCIO_2.4_ACES_tests_r7_rga001.txt']"
+Intel(R) Xeon(R) W-2295 CPU @ 3.00GHz,ACES 2.0,r9,2,813.6271783756678,144.99670421442653,1.6332604154166663,49,"['OCIO_2.4_ACES_tests_r9_sys2976.txt', 'OCIO_2.4_ACES_tests_r9_sys2976.txt']"

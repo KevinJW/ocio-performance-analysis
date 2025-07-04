@@ -1,0 +1,102 @@
+OCIO Test Results - OCIO Version Performance Comparison Report (by ACES Version)
+=====================================================================================
+
+SUMMARY STATISTICS
+--------------------
+Total OCIO-ACES version combinations: 5
+OCIO versions: ['2.4.0', '2.4.1', '2.4.2']
+ACES versions: ['ACES 1.0', 'ACES 2.0']
+
+OVERALL ACES VERSION PERFORMANCE
+-----------------------------------
+ACES 1.0: 292.17 ± 27.78 ms
+ACES 2.0: 2004.97 ± 237.01 ms
+
+Fastest combination: 2.4.2 + ACES 1.0 (275.5 ms)
+Slowest combination: 2.4.1 + ACES 2.0 (2172.6 ms)
+Performance difference: 688.5%
+
+DETAILED OCIO VERSION ANALYSIS BY ACES VERSION
+--------------------------------------------------
+
+ACES 1.0:
+==========
+
+  OCIO Version: 2.4.0
+  ----------------------
+    Files tested: 1
+    Mean avg time: 324.238 ms
+    Std deviation: nan ms
+    Median time: 0.731 ms
+    Total operations: 27
+    CPU models tested: 1
+    OS releases tested: ['r7']
+    CPU models: Intel(R) Xeon(R) CPU E5-2667 v4 @ 3.20GHz
+    Relative performance: 117.7% of fastest overall
+
+  OCIO Version: 2.4.1
+  ----------------------
+    Files tested: 12
+    Mean avg time: 276.738 ms
+    Std deviation: 66.713 ms
+    Median time: 0.372 ms
+    Total operations: 302
+    CPU models tested: 8
+    OS releases tested: ['r7', 'r9']
+    CPU models: Intel(R) Xeon(R) W-2295 CPU @ 3.00GHz, Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz, Intel(R) Xeon(R) CPU E5-2667 v4 @ 3.20GHz, Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz, Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz, Intel(R) Xeon(R) w5-2465X, Intel(R) Xeon(R) w7-2495X
+    Relative performance: 100.4% of fastest overall
+
+  OCIO Version: 2.4.2
+  ----------------------
+    Files tested: 12
+    Mean avg time: 275.545 ms
+    Std deviation: 67.134 ms
+    Median time: 0.397 ms
+    Total operations: 304
+    CPU models tested: 8
+    OS releases tested: ['r7', 'r9']
+    CPU models: Intel(R) Xeon(R) W-2295 CPU @ 3.00GHz, Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz, Intel(R) Xeon(R) CPU E5-2667 v4 @ 3.20GHz, Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz, Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz, Intel(R) Xeon(R) w5-2465X, Intel(R) Xeon(R) w7-2495X
+    Relative performance: 100.0% of fastest overall
+
+  OCIO Version Comparison within ACES 1.0:
+  -------------------------------------------
+    Fastest: 2.4.0 (324.2 ms)
+    Slowest: 2.4.2 (275.5 ms)
+    Performance difference: -15.0%
+
+------------------------------------------------------------
+
+ACES 2.0:
+==========
+
+  OCIO Version: 2.4.1
+  ----------------------
+    Files tested: 12
+    Mean avg time: 2172.562 ms
+    Std deviation: 856.225 ms
+    Median time: 2.554 ms
+    Total operations: 297
+    CPU models tested: 8
+    OS releases tested: ['r7', 'r9']
+    CPU models: Intel(R) Xeon(R) W-2295 CPU @ 3.00GHz, Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz, Intel(R) Xeon(R) CPU E5-2667 v4 @ 3.20GHz, Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz, Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz, Intel(R) Xeon(R) w5-2465X, Intel(R) Xeon(R) w7-2495X
+    Relative performance: 788.5% of fastest overall
+
+  OCIO Version: 2.4.2
+  ----------------------
+    Files tested: 12
+    Mean avg time: 1837.379 ms
+    Std deviation: 815.956 ms
+    Median time: 2.913 ms
+    Total operations: 306
+    CPU models tested: 8
+    OS releases tested: ['r7', 'r9']
+    CPU models: Intel(R) Xeon(R) W-2295 CPU @ 3.00GHz, Intel(R) Xeon(R) CPU E5-2687W v3 @ 3.10GHz, Intel(R) Xeon(R) CPU E5-2667 v4 @ 3.20GHz, Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz, Intel(R) Core(TM) i9-9900 CPU @ 3.10GHz, Intel(R) Xeon(R) w5-2465X, Intel(R) Xeon(R) w7-2495X
+    Relative performance: 666.8% of fastest overall
+
+  OCIO Version Comparison within ACES 2.0:
+  -------------------------------------------
+    Fastest: 2.4.1 (2172.6 ms)
+    Slowest: 2.4.2 (1837.4 ms)
+    Performance difference: -15.4%
+
+------------------------------------------------------------
