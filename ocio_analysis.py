@@ -49,27 +49,27 @@ class OCIOAnalyzer:
     
     def summarize_by_filename(self) -> pd.DataFrame:
         """
-        Summarize test runs by filename using mean averages for numerical columns.
+        Summarize test runs by filename and OCIO version using mean averages for numerical columns.
         
         Returns:
-            DataFrame with summarized data grouped by filename
+            DataFrame with summarized data grouped by filename and OCIO version
         """
         if self.df is None:
             raise ValueError("Data not loaded. Call load_data() first.")
         
-        # Group by filename and calculate means for numerical columns
+        # Group by filename AND OCIO version to capture all combinations
         summary_data = []
         
-        for file_name, group in self.df.groupby('file_name'):
-            # Get the common metadata (should be same for all rows from same file)
-            metadata = group[['os_release', 'cpu_model', 'ocio_version', 'config_version']].iloc[0]
+        for (file_name, ocio_version), group in self.df.groupby(['file_name', 'ocio_version']):
+            # Get the common metadata (should be same for all rows from same file+version)
+            metadata = group[['os_release', 'cpu_model', 'config_version']].iloc[0]
             
             # Calculate statistics
             stats = {
                 'file_name': file_name,
                 'os_release': metadata['os_release'],
                 'cpu_model': metadata['cpu_model'],
-                'ocio_version': metadata['ocio_version'],
+                'ocio_version': ocio_version,  # Use the version from groupby
                 'config_version': metadata['config_version'],
                 'total_operations': len(group),
                 'unique_operations': group['operation'].nunique(),
@@ -490,6 +490,170 @@ class OCIOAnalyzer:
         
         logger.info("OCIO version comparison plot saved")
     
+    def create_detailed_cpu_os_ocio_comparison(self, output_dir: Path) -> None:
+        """
+        Create detailed CPU+OS comparison chart for OCIO versions 2.4.1 and 2.4.2.
+        
+        Args:
+            output_dir: Directory to save plots
+        """
+        output_dir.mkdir(exist_ok=True)
+        
+        if self.summary_df is None:
+            raise ValueError("Summary data not available. Call summarize_by_filename() first.")
+        
+        # Filter data for OCIO versions 2.4.1 and 2.4.2
+        ocio_versions = ['2.4.1', '2.4.2']
+        filtered_data = self.summary_df[self.summary_df['ocio_version'].isin(ocio_versions)]
+        
+        if len(filtered_data) == 0:
+            logger.warning("No data found for OCIO versions 2.4.1 and 2.4.2")
+            return
+        
+        # Create short labels for CPU + OS combinations
+        filtered_data = filtered_data.copy()
+        filtered_data['short_label'] = filtered_data.apply(
+            lambda row: self._create_short_cpu_os_label(row['cpu_model'], row['os_release']), 
+            axis=1
+        )
+        
+        # Group by CPU+OS combination and check for both OCIO versions
+        comparison_data = []
+        for (cpu_model, os_release), group in filtered_data.groupby(['cpu_model', 'os_release']):
+            versions_present = group['ocio_version'].unique()
+            if len(versions_present) >= 1:  # At least one version present
+                group_data = {
+                    'cpu_model': cpu_model,
+                    'os_release': os_release,
+                    'short_label': group['short_label'].iloc[0]
+                }
+                
+                # Add performance data for each version
+                for version in ocio_versions:
+                    version_data = group[group['ocio_version'] == version]
+                    if len(version_data) > 0:
+                        group_data[f'ocio_{version}'] = version_data['mean_avg_time'].mean()
+                    else:
+                        group_data[f'ocio_{version}'] = None
+                
+                comparison_data.append(group_data)
+        
+        if not comparison_data:
+            logger.warning("No CPU+OS combinations found with OCIO version data")
+            return
+        
+        # Create the comparison chart
+        fig, ax = plt.subplots(figsize=(16, 10))
+        
+        # Prepare data for plotting
+        labels = []
+        ocio_241_values = []
+        ocio_242_values = []
+        
+        for item in comparison_data:
+            labels.append(item['short_label'])
+            # Handle None values by converting to 0
+            val_241 = item.get('ocio_2.4.1', None)
+            val_242 = item.get('ocio_2.4.2', None)
+            ocio_241_values.append(val_241 if val_241 is not None else 0)
+            ocio_242_values.append(val_242 if val_242 is not None else 0)
+        
+        # Create bar positions
+        x_pos = range(len(labels))
+        bar_width = 0.35
+        
+        # Create bars
+        bars1 = ax.bar([x - bar_width/2 for x in x_pos], ocio_241_values, 
+                      bar_width, label='OCIO 2.4.1', alpha=0.8, color='#2E86AB')
+        bars2 = ax.bar([x + bar_width/2 for x in x_pos], ocio_242_values, 
+                      bar_width, label='OCIO 2.4.2', alpha=0.8, color='#A23B72')
+        
+        # Customize the plot
+        ax.set_title('OCIO Version Performance Comparison by CPU and OS\n(2.4.1 vs 2.4.2)', 
+                    fontsize=14, fontweight='bold', pad=20)
+        ax.set_xlabel('CPU Model + OS Release', fontsize=12)
+        ax.set_ylabel('Mean Average Time (ms)', fontsize=12)
+        ax.set_xticks(x_pos)
+        ax.set_xticklabels(labels, rotation=45, ha='right')
+        ax.legend(fontsize=10)
+        ax.grid(True, alpha=0.3, axis='y')
+        
+        # Add value labels on bars
+        for bar, value in zip(bars1, ocio_241_values):
+            if value > 0:
+                ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(ocio_241_values)*0.01,
+                       f'{value:.0f}', ha='center', va='bottom', fontsize=9)
+        
+        for bar, value in zip(bars2, ocio_242_values):
+            if value > 0:
+                ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(ocio_242_values)*0.01,
+                       f'{value:.0f}', ha='center', va='bottom', fontsize=9)
+        
+        # Add performance difference annotations
+        for i, (val1, val2) in enumerate(zip(ocio_241_values, ocio_242_values)):
+            if val1 > 0 and val2 > 0:
+                diff_pct = ((val2 - val1) / val1) * 100
+                color = 'green' if diff_pct < 0 else 'red'
+                ax.annotate(f'{diff_pct:+.1f}%', 
+                          xy=(i, max(val1, val2) + max(max(ocio_241_values), max(ocio_242_values))*0.05),
+                          ha='center', va='bottom', fontsize=8, color=color, fontweight='bold')
+        
+        plt.tight_layout()
+        plt.savefig(output_dir / 'ocio_241_vs_242_cpu_os_comparison.png', 
+                   dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        logger.info("Detailed CPU+OS OCIO version comparison plot saved")
+    
+    def _create_short_cpu_os_label(self, cpu_model: str, os_release: str) -> str:
+        """
+        Create a short label for CPU model and OS release.
+        
+        Args:
+            cpu_model: Full CPU model name
+            os_release: OS release (r7, r9, etc.)
+            
+        Returns:
+            Short label for display
+        """
+        if cpu_model == 'Unknown':
+            return f'Unknown-{os_release}'
+        
+        # Extract key CPU information
+        cpu_short = cpu_model
+        
+        # Remove common prefixes/suffixes
+        cpu_short = cpu_short.replace('Intel(R) ', '')
+        cpu_short = cpu_short.replace('(R) ', '')
+        cpu_short = cpu_short.replace(' CPU', '')
+        
+        # Simplify specific model names
+        if 'Core(TM) i9-9900K' in cpu_short:
+            cpu_short = 'i9-9900K'
+        elif 'Core(TM) i9-9900' in cpu_short:
+            cpu_short = 'i9-9900'
+        elif 'Xeon(R) CPU E5-2687W v3' in cpu_short:
+            cpu_short = 'E5-2687W-v3'
+        elif 'Xeon(R) CPU E5-2667 v4' in cpu_short:
+            cpu_short = 'E5-2667-v4'
+        elif 'Xeon(R) W-2295' in cpu_short:
+            cpu_short = 'W-2295'
+        elif 'Xeon(R) w5-2465X' in cpu_short:
+            cpu_short = 'w5-2465X'
+        elif 'Xeon(R) w7-2495X' in cpu_short:
+            cpu_short = 'w7-2495X'
+        else:
+            # General simplification for other models
+            parts = cpu_short.split()
+            if len(parts) > 2:
+                cpu_short = f"{parts[0]}-{parts[1]}"
+            elif len(parts) > 1:
+                cpu_short = f"{parts[0]}-{parts[1]}"
+            else:
+                cpu_short = parts[0] if parts else 'Unknown'
+        
+        return f"{cpu_short}-{os_release}"
+
     def create_detailed_ocio_comparison_report(self, output_dir: Path) -> None:
         """
         Create a detailed OCIO version comparison report.
@@ -575,6 +739,7 @@ class OCIOAnalyzer:
         self.create_os_comparison_plots(output_dir)
         self.create_detailed_comparison_report(output_dir)
         self.create_ocio_version_plots(output_dir)
+        self.create_detailed_cpu_os_ocio_comparison(output_dir)
         self.create_detailed_ocio_comparison_report(output_dir)
         
         # Save summary data

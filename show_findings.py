@@ -64,7 +64,20 @@ def print_key_findings():
     if analysis_dir.exists():
         files = list(analysis_dir.iterdir())
         for file in sorted(files):
-            print(f"   • {file.name}")
+            if file.name.endswith('.png'):
+                print(f"   📊 {file.name}")
+            elif file.name.endswith('.txt'):
+                print(f"   📄 {file.name}")
+            elif file.name.endswith('.csv'):
+                print(f"   📈 {file.name}")
+    
+    # Check if the new detailed comparison chart exists
+    new_chart = analysis_dir / "ocio_241_vs_242_cpu_os_comparison.png"
+    if new_chart.exists():
+        print(f"\n🆕 NEW ANALYSIS AVAILABLE:")
+        print(f"   📊 Detailed CPU+OS OCIO 2.4.1 vs 2.4.2 comparison chart created!")
+        print(f"   💡 This chart shows performance differences between OCIO versions")
+        print(f"      for each CPU and OS combination with short labels for easy reading.")
 
 def print_ocio_version_findings():
     """Print OCIO version comparison findings."""

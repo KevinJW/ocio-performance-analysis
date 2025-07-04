@@ -28,19 +28,32 @@ Our analysis of 3 CPU models tested on both r7 and r9 OS releases shows **consis
 - **Average r9 performance**: 619.0 ms  
 - **Overall improvement**: **56.9%**
 
-### OCIO Version Comparison (2.4.0 vs 2.4.1)
+### OCIO Version Comparison (2.4.0 vs 2.4.1 vs 2.4.2)
 
-The analysis also compares performance between OCIO versions 2.4.0 and 2.4.1:
+The analysis reveals significant performance improvements from OCIO 2.4.1 to 2.4.2:
 
 | OCIO Version | Average Performance | Files Tested | Total Operations |
 |--------------|-------------------|---------------|------------------|
-| 2.4.1 | 1117.0 ms | 11 | 1,101 |
+| 2.4.2 | 946.4 ms | 12 | 610 |
+| 2.4.1 | 1117.0 ms | 11 | 599 |
 | 2.4.0 | 1164.5 ms | 1 | 135 |
 
 **Key OCIO Version Findings:**
-- **Performance Difference**: 4.3% (2.4.1 is faster)
-- **Minimal Impact**: OCIO version differences are minor compared to OS release improvements
-- **Recommendation**: Performance differences between OCIO versions are negligible compared to OS-level optimizations
+
+**📊 OCIO 2.4.1 vs 2.4.2 Direct Comparison:**
+- **Performance Improvement**: 15.3% average improvement with 2.4.2
+- **Consistency**: OCIO 2.4.2 is faster in 11/11 tested CPU+OS combinations
+- **Range**: Improvements range from 9.9% to 26.5% depending on configuration
+
+**🚀 Significant Performance Gains:**
+- **Best improvement**: 26.5% (Xeon w7-2495X on r9)
+- **Typical improvement**: 10-20% across most configurations
+- **OS Release Impact**: r9 OS shows larger improvements (17-27%) compared to r7 OS (10-15%)
+
+**📈 Version Progression:**
+- **2.4.0 → 2.4.1**: Minor improvement (4.3%)
+- **2.4.1 → 2.4.2**: Major improvement (15.3%)
+- **Overall**: 2.4.2 represents a significant performance milestone
 
 ### Direct CPU+OS OCIO Comparison
 
@@ -56,18 +69,20 @@ For the same CPU and OS combination (Intel(R) Xeon(R) CPU E5-2667 v4 @ 3.20GHz o
 1. **`summary_analysis.png`** - Overall performance summary visualizations
 2. **`os_comparison_*.png`** - Individual CPU model OS comparisons (3 files)
 3. **`ocio_version_comparison.png`** - OCIO version performance comparison charts
-4. **`os_comparison_report.txt`** - Detailed text report with OS findings
-5. **`ocio_version_comparison_report.txt`** - Detailed OCIO version comparison report
-6. **`file_summaries.csv`** - Summarized data grouped by filename
-7. **`os_comparisons.csv`** - CPU-OS combination comparison data
-8. **`ocio_version_comparisons.csv`** - OCIO version comparison data
-9. **`detailed_ocio_comparisons.csv`** - Detailed OCIO version comparison data
+4. **`ocio_241_vs_242_cpu_os_comparison.png`** - **NEW**: Detailed CPU+OS comparison for OCIO 2.4.1 vs 2.4.2
+5. **`os_comparison_report.txt`** - Detailed text report with OS findings
+6. **`ocio_version_comparison_report.txt`** - Detailed OCIO version comparison report
+7. **`file_summaries.csv`** - Summarized data grouped by filename
+8. **`os_comparisons.csv`** - CPU-OS combination comparison data
+9. **`ocio_version_comparisons.csv`** - OCIO version comparison data
+10. **`detailed_ocio_comparisons.csv`** - Detailed OCIO version comparison data
 
 ### Scripts
 
 1. **`ocio_analysis.py`** - Main analysis script
 2. **`show_findings.py`** - Quick summary of key findings
 3. **`view_plots.py`** - Script to view generated visualizations
+4. **`analyze_ocio_versions.py`** - **NEW**: Detailed OCIO 2.4.1 vs 2.4.2 analysis
 
 ## 🚀 Usage
 
