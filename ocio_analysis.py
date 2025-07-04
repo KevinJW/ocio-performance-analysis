@@ -38,30 +38,52 @@ class OCIOAnalyzer:
         self.comparison_data = None
         
     def load_data(self) -> pd.DataFrame:
-        """Load CSV data into DataFrame."""
+        """Load CSV data into DataFrame and add ACES version categorization."""
         try:
             self.df = pd.read_csv(self.csv_file)
+            
+            # Add ACES version categorization
+            self.df['aces_version'] = self.df['target_colorspace'].apply(self._categorize_aces_version)
+            
             logger.info(f"Loaded {len(self.df)} records from {self.csv_file}")
+            logger.info(f"ACES version distribution: {self.df['aces_version'].value_counts().to_dict()}")
             return self.df
         except Exception as e:
             logger.error(f"Error loading CSV file: {e}")
             raise
     
+    def _categorize_aces_version(self, target_colorspace: str) -> str:
+        """
+        Categorize the ACES version based on target colorspace.
+        
+        Args:
+            target_colorspace: The target colorspace string
+            
+        Returns:
+            ACES version category ('ACES 1.0', 'ACES 2.0', or 'Other')
+        """
+        if 'ACES 1.0' in target_colorspace:
+            return 'ACES 1.0'
+        elif 'ACES 2.0' in target_colorspace:
+            return 'ACES 2.0'
+        else:
+            return 'Other'
+    
     def summarize_by_filename(self) -> pd.DataFrame:
         """
-        Summarize test runs by filename and OCIO version using mean averages for numerical columns.
+        Summarize test runs by filename, OCIO version, and ACES version using mean averages for numerical columns.
         
         Returns:
-            DataFrame with summarized data grouped by filename and OCIO version
+            DataFrame with summarized data grouped by filename, OCIO version, and ACES version
         """
         if self.df is None:
             raise ValueError("Data not loaded. Call load_data() first.")
         
-        # Group by filename AND OCIO version to capture all combinations
+        # Group by filename, OCIO version, AND ACES version to capture all combinations
         summary_data = []
         
-        for (file_name, ocio_version), group in self.df.groupby(['file_name', 'ocio_version']):
-            # Get the common metadata (should be same for all rows from same file+version)
+        for (file_name, ocio_version, aces_version), group in self.df.groupby(['file_name', 'ocio_version', 'aces_version']):
+            # Get the common metadata (should be same for all rows from same file+version+aces)
             metadata = group[['os_release', 'cpu_model', 'config_version']].iloc[0]
             
             # Calculate statistics
@@ -70,6 +92,7 @@ class OCIOAnalyzer:
                 'os_release': metadata['os_release'],
                 'cpu_model': metadata['cpu_model'],
                 'ocio_version': ocio_version,  # Use the version from groupby
+                'aces_version': aces_version,  # Use the ACES version from groupby
                 'config_version': metadata['config_version'],
                 'total_operations': len(group),
                 'unique_operations': group['operation'].nunique(),
@@ -97,7 +120,7 @@ class OCIOAnalyzer:
     
     def find_cpu_os_comparisons(self) -> pd.DataFrame:
         """
-        Find cases where CPU is the same but OS release differs.
+        Find cases where CPU is the same but OS release differs, split by ACES version.
         
         Returns:
             DataFrame with comparison data
@@ -105,16 +128,16 @@ class OCIOAnalyzer:
         if self.summary_df is None:
             raise ValueError("Summary data not available. Call summarize_by_filename() first.")
         
-        # Group by CPU model and find cases with multiple OS releases
+        # Group by CPU model and ACES version, then find cases with multiple OS releases
         comparison_data = []
         
-        for cpu_model, group in self.summary_df.groupby('cpu_model'):
+        for (cpu_model, aces_version), group in self.summary_df.groupby(['cpu_model', 'aces_version']):
             if cpu_model == 'Unknown':
                 continue
                 
             os_releases = group['os_release'].unique()
             if len(os_releases) > 1:
-                logger.info(f"Found CPU '{cpu_model}' with OS releases: {os_releases}")
+                logger.info(f"Found CPU '{cpu_model}' with ACES {aces_version} having OS releases: {os_releases}")
                 
                 # Create comparison records
                 for os_release in os_releases:
@@ -122,6 +145,7 @@ class OCIOAnalyzer:
                     
                     comparison_data.extend([{
                         'cpu_model': cpu_model,
+                        'aces_version': aces_version,
                         'os_release': os_release,
                         'file_count': len(os_data),
                         'mean_avg_time': os_data['mean_avg_time'].mean(),
@@ -132,12 +156,12 @@ class OCIOAnalyzer:
                     }])
         
         self.comparison_data = pd.DataFrame(comparison_data)
-        logger.info(f"Found {len(self.comparison_data)} CPU-OS combinations for comparison")
+        logger.info(f"Found {len(self.comparison_data)} CPU-OS-ACES combinations for comparison")
         return self.comparison_data
     
     def find_ocio_version_comparisons(self) -> pd.DataFrame:
         """
-        Find cases where the same CPU and OS combination has multiple OCIO versions.
+        Find cases where the same CPU, OS, and ACES version combination has multiple OCIO versions.
         
         Returns:
             DataFrame with OCIO version comparison data
@@ -145,16 +169,16 @@ class OCIOAnalyzer:
         if self.summary_df is None:
             raise ValueError("Summary data not available. Call summarize_by_filename() first.")
         
-        # Group by CPU model and OS release to find multiple OCIO versions
+        # Group by CPU model, OS release, and ACES version to find multiple OCIO versions
         ocio_comparison_data = []
         
-        for (cpu_model, os_release), group in self.summary_df.groupby(['cpu_model', 'os_release']):
+        for (cpu_model, os_release, aces_version), group in self.summary_df.groupby(['cpu_model', 'os_release', 'aces_version']):
             if cpu_model == 'Unknown':
                 continue
                 
             ocio_versions = group['ocio_version'].unique()
             if len(ocio_versions) > 1:
-                logger.info(f"Found CPU '{cpu_model}' on OS '{os_release}' with OCIO versions: {ocio_versions}")
+                logger.info(f"Found CPU '{cpu_model}' on OS '{os_release}' with ACES {aces_version} having OCIO versions: {ocio_versions}")
                 
                 # Create comparison records for each OCIO version
                 for ocio_version in ocio_versions:
@@ -163,6 +187,7 @@ class OCIOAnalyzer:
                     ocio_comparison_data.extend([{
                         'cpu_model': cpu_model,
                         'os_release': os_release,
+                        'aces_version': aces_version,
                         'ocio_version': ocio_version,
                         'file_count': len(version_data),
                         'mean_avg_time': version_data['mean_avg_time'].mean(),
@@ -173,12 +198,12 @@ class OCIOAnalyzer:
                     }])
         
         self.ocio_comparison_data = pd.DataFrame(ocio_comparison_data)
-        logger.info(f"Found {len(self.ocio_comparison_data)} CPU-OS-OCIO combinations for comparison")
+        logger.info(f"Found {len(self.ocio_comparison_data)} CPU-OS-ACES-OCIO combinations for comparison")
         return self.ocio_comparison_data
     
     def find_all_ocio_version_comparisons(self) -> pd.DataFrame:
         """
-        Find all cases where different OCIO versions can be compared.
+        Find all cases where different OCIO versions can be compared, split by ACES version.
         
         Returns:
             DataFrame with all OCIO version comparison data
@@ -186,12 +211,13 @@ class OCIOAnalyzer:
         if self.summary_df is None:
             raise ValueError("Summary data not available. Call summarize_by_filename() first.")
         
-        # Group by OCIO version and calculate overall statistics
+        # Group by OCIO version and ACES version to calculate overall statistics
         all_ocio_comparison_data = []
         
-        for ocio_version, group in self.summary_df.groupby('ocio_version'):
+        for (ocio_version, aces_version), group in self.summary_df.groupby(['ocio_version', 'aces_version']):
             all_ocio_comparison_data.append({
                 'ocio_version': ocio_version,
+                'aces_version': aces_version,
                 'file_count': len(group),
                 'mean_avg_time': group['mean_avg_time'].mean(),
                 'std_avg_time': group['mean_avg_time'].std(),
@@ -202,12 +228,12 @@ class OCIOAnalyzer:
             })
         
         self.all_ocio_comparison_data = pd.DataFrame(all_ocio_comparison_data)
-        logger.info(f"Found {len(self.all_ocio_comparison_data)} OCIO versions for overall comparison")
+        logger.info(f"Found {len(self.all_ocio_comparison_data)} OCIO version-ACES combinations for overall comparison")
         return self.all_ocio_comparison_data
     
     def create_summary_plots(self, output_dir: Path) -> None:
         """
-        Create summary visualization plots.
+        Create summary visualization plots with ACES version information.
         
         Args:
             output_dir: Directory to save plots
@@ -217,47 +243,129 @@ class OCIOAnalyzer:
         if self.summary_df is None:
             raise ValueError("Summary data not available. Call summarize_by_filename() first.")
         
-        # Plot 1: Average execution time by OS release
-        plt.figure(figsize=(12, 8))
+        # Plot 1: Average execution time by OS release and ACES version
+        plt.figure(figsize=(15, 12))
         
-        plt.subplot(2, 2, 1)
-        os_perf = self.summary_df.groupby('os_release')['mean_avg_time'].agg(['mean', 'std', 'count'])
-        os_perf.plot(kind='bar', y='mean', yerr='std', ax=plt.gca())
-        plt.title('Average Execution Time by OS Release')
+        plt.subplot(2, 3, 1)
+        # Group by OS release and ACES version
+        os_aces_perf = self.summary_df.groupby(['os_release', 'aces_version'])['mean_avg_time'].agg(['mean', 'std'])
+        os_aces_perf = os_aces_perf.reset_index()
+        
+        # Create grouped bar chart
+        aces_1_data = os_aces_perf[os_aces_perf['aces_version'] == 'ACES 1.0']
+        aces_2_data = os_aces_perf[os_aces_perf['aces_version'] == 'ACES 2.0']
+        
+        os_releases = sorted(self.summary_df['os_release'].unique())
+        x = range(len(os_releases))
+        width = 0.35
+        
+        # Get data for each OS release
+        aces_1_means = []
+        aces_2_means = []
+        aces_1_stds = []
+        aces_2_stds = []
+        
+        for os_rel in os_releases:
+            aces_1_row = aces_1_data[aces_1_data['os_release'] == os_rel]
+            aces_2_row = aces_2_data[aces_2_data['os_release'] == os_rel]
+            
+            aces_1_means.append(aces_1_row['mean'].iloc[0] if len(aces_1_row) > 0 else 0)
+            aces_2_means.append(aces_2_row['mean'].iloc[0] if len(aces_2_row) > 0 else 0)
+            aces_1_stds.append(aces_1_row['std'].iloc[0] if len(aces_1_row) > 0 else 0)
+            aces_2_stds.append(aces_2_row['std'].iloc[0] if len(aces_2_row) > 0 else 0)
+        
+        plt.bar([i - width/2 for i in x], aces_1_means, width, yerr=aces_1_stds, 
+               capsize=3, alpha=0.7, label='ACES 1.0')
+        plt.bar([i + width/2 for i in x], aces_2_means, width, yerr=aces_2_stds, 
+               capsize=3, alpha=0.7, label='ACES 2.0')
+        plt.title('Average Execution Time by OS Release and ACES Version')
         plt.xlabel('OS Release')
         plt.ylabel('Mean Average Time (ms)')
-        plt.xticks(rotation=45)
+        plt.xticks(x, os_releases)
+        plt.legend()
+        plt.grid(True, alpha=0.3)
         
         # Plot 2: CPU model performance distribution
-        plt.subplot(2, 2, 2)
+        plt.subplot(2, 3, 2)
         cpu_data = self.summary_df[self.summary_df['cpu_model'] != 'Unknown']
         if len(cpu_data) > 0:
-            cpu_perf = cpu_data.groupby('cpu_model')['mean_avg_time'].mean().sort_values()
-            cpu_perf.plot(kind='barh')
-            plt.title('Average Performance by CPU Model')
+            cpu_aces_perf = cpu_data.groupby(['cpu_model', 'aces_version'])['mean_avg_time'].mean().unstack(fill_value=0)
+            cpu_aces_perf.plot(kind='barh', ax=plt.gca(), alpha=0.7)
+            plt.title('Average Performance by CPU Model and ACES Version')
             plt.xlabel('Mean Average Time (ms)')
             plt.ylabel('CPU Model')
         
-        # Plot 3: Performance distribution histogram
-        plt.subplot(2, 2, 3)
-        plt.hist(self.summary_df['mean_avg_time'], bins=20, alpha=0.7, edgecolor='black')
+        # Plot 3: Performance distribution histogram by ACES version
+        plt.subplot(2, 3, 3)
+        aces_1_times = self.summary_df[self.summary_df['aces_version'] == 'ACES 1.0']['mean_avg_time']
+        aces_2_times = self.summary_df[self.summary_df['aces_version'] == 'ACES 2.0']['mean_avg_time']
+        
+        plt.hist(aces_1_times, bins=15, alpha=0.7, label='ACES 1.0', edgecolor='black')
+        plt.hist(aces_2_times, bins=15, alpha=0.7, label='ACES 2.0', edgecolor='black')
         plt.title('Distribution of Average Execution Times')
         plt.xlabel('Mean Average Time (ms)')
         plt.ylabel('Frequency')
+        plt.legend()
         
-        # Plot 4: OS vs CPU heatmap
-        plt.subplot(2, 2, 4)
-        if len(self.summary_df[self.summary_df['cpu_model'] != 'Unknown']) > 0:
-            pivot_data = self.summary_df[self.summary_df['cpu_model'] != 'Unknown'].pivot_table(
+        # Plot 4: OS vs CPU heatmap for ACES 1.0
+        plt.subplot(2, 3, 4)
+        aces_1_data = self.summary_df[
+            (self.summary_df['cpu_model'] != 'Unknown') & 
+            (self.summary_df['aces_version'] == 'ACES 1.0')
+        ]
+        if len(aces_1_data) > 0:
+            pivot_data = aces_1_data.pivot_table(
                 values='mean_avg_time', 
                 index='cpu_model', 
                 columns='os_release', 
                 aggfunc='mean'
             )
-            sns.heatmap(pivot_data, annot=True, fmt='.2f', cmap='viridis')
-            plt.title('Performance Heatmap: CPU vs OS')
+            sns.heatmap(pivot_data, annot=True, fmt='.1f', cmap='viridis', cbar_kws={'label': 'ms'})
+            plt.title('Performance Heatmap: CPU vs OS (ACES 1.0)')
             plt.xlabel('OS Release')
             plt.ylabel('CPU Model')
+        
+        # Plot 5: OS vs CPU heatmap for ACES 2.0
+        plt.subplot(2, 3, 5)
+        aces_2_data = self.summary_df[
+            (self.summary_df['cpu_model'] != 'Unknown') & 
+            (self.summary_df['aces_version'] == 'ACES 2.0')
+        ]
+        if len(aces_2_data) > 0:
+            pivot_data = aces_2_data.pivot_table(
+                values='mean_avg_time', 
+                index='cpu_model', 
+                columns='os_release', 
+                aggfunc='mean'
+            )
+            sns.heatmap(pivot_data, annot=True, fmt='.1f', cmap='viridis', cbar_kws={'label': 'ms'})
+            plt.title('Performance Heatmap: CPU vs OS (ACES 2.0)')
+            plt.xlabel('OS Release')
+            plt.ylabel('CPU Model')
+        
+        # Plot 6: ACES version comparison summary
+        plt.subplot(2, 3, 6)
+        overall_aces_1 = self.summary_df[self.summary_df['aces_version'] == 'ACES 1.0']['mean_avg_time'].mean()
+        overall_aces_2 = self.summary_df[self.summary_df['aces_version'] == 'ACES 2.0']['mean_avg_time'].mean()
+        
+        bars = plt.bar(['ACES 1.0', 'ACES 2.0'], [overall_aces_1, overall_aces_2], 
+                      color=['#2E86AB', '#A23B72'], alpha=0.7)
+        plt.title('Overall ACES Version Performance')
+        plt.ylabel('Mean Average Time (ms)')
+        plt.grid(True, alpha=0.3)
+        
+        # Add value labels
+        for bar, value in zip(bars, [overall_aces_1, overall_aces_2]):
+            plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
+                    f'{value:.1f}ms', ha='center', va='bottom', fontsize=10)
+        
+        # Add difference annotation
+        diff_pct = ((overall_aces_2 - overall_aces_1) / overall_aces_1) * 100 if overall_aces_1 > 0 else 0
+        plt.annotate(f'Difference: {diff_pct:+.1f}%', 
+                    xy=(0.5, max(overall_aces_1, overall_aces_2) * 1.1),
+                    xycoords='data', ha='center', va='bottom',
+                    fontsize=9, color='red' if diff_pct > 0 else 'green',
+                    fontweight='bold')
         
         plt.tight_layout()
         plt.savefig(output_dir / 'summary_analysis.png', dpi=300, bbox_inches='tight')
@@ -267,7 +375,7 @@ class OCIOAnalyzer:
     
     def create_os_comparison_plots(self, output_dir: Path) -> None:
         """
-        Create OS comparison plots for same CPU models.
+        Create OS comparison plots for same CPU models, split by ACES version.
         
         Args:
             output_dir: Directory to save plots
@@ -286,60 +394,135 @@ class OCIOAnalyzer:
             if len(cpu_data) < 2:
                 continue
             
+            # Check if we have both ACES versions
+            aces_versions = cpu_data['aces_version'].unique()
+            
             # Create comparison plot for this CPU
             fig, axes = plt.subplots(2, 2, figsize=(15, 10))
-            fig.suptitle(f'OS Performance Comparison\n{cpu_model}', fontsize=14, fontweight='bold')
+            fig.suptitle(f'OS Performance Comparison by ACES Version\n{cpu_model}', fontsize=14, fontweight='bold')
             
-            # Plot 1: Bar chart of mean performance
+            # Plot 1: Bar chart of mean performance by ACES version
             ax1 = axes[0, 0]
-            bars = ax1.bar(cpu_data['os_release'], cpu_data['mean_avg_time'], 
-                          yerr=cpu_data['std_avg_time'], capsize=5, alpha=0.7)
-            ax1.set_title('Mean Average Execution Time')
+            
+            # Create grouped bar chart
+            aces_1_data = cpu_data[cpu_data['aces_version'] == 'ACES 1.0']
+            aces_2_data = cpu_data[cpu_data['aces_version'] == 'ACES 2.0']
+            
+            width = 0.35
+            os_releases = sorted(cpu_data['os_release'].unique())
+            x = range(len(os_releases))
+            
+            # Get data for each OS release for both ACES versions
+            aces_1_times = []
+            aces_2_times = []
+            aces_1_stds = []
+            aces_2_stds = []
+            
+            for os_rel in os_releases:
+                aces_1_os = aces_1_data[aces_1_data['os_release'] == os_rel]
+                aces_2_os = aces_2_data[aces_2_data['os_release'] == os_rel]
+                
+                aces_1_times.append(aces_1_os['mean_avg_time'].mean() if len(aces_1_os) > 0 else 0)
+                aces_2_times.append(aces_2_os['mean_avg_time'].mean() if len(aces_2_os) > 0 else 0)
+                aces_1_stds.append(aces_1_os['std_avg_time'].mean() if len(aces_1_os) > 0 else 0)
+                aces_2_stds.append(aces_2_os['std_avg_time'].mean() if len(aces_2_os) > 0 else 0)
+            
+            # Create bars
+            bars1 = ax1.bar([i - width/2 for i in x], aces_1_times, width, 
+                           yerr=aces_1_stds, capsize=5, alpha=0.7, label='ACES 1.0')
+            bars2 = ax1.bar([i + width/2 for i in x], aces_2_times, width, 
+                           yerr=aces_2_stds, capsize=5, alpha=0.7, label='ACES 2.0')
+            
+            ax1.set_title('Mean Average Execution Time by ACES Version')
             ax1.set_xlabel('OS Release')
             ax1.set_ylabel('Mean Average Time (ms)')
+            ax1.set_xticks(x)
+            ax1.set_xticklabels(os_releases)
+            ax1.legend()
             ax1.grid(True, alpha=0.3)
             
             # Add value labels on bars
-            for bar, value in zip(bars, cpu_data['mean_avg_time']):
-                ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
-                        f'{value:.2f}', ha='center', va='bottom')
+            for bar, value in zip(bars1, aces_1_times):
+                if value > 0:
+                    ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
+                            f'{value:.1f}', ha='center', va='bottom', fontsize=9)
             
-            # Plot 2: File count comparison
+            for bar, value in zip(bars2, aces_2_times):
+                if value > 0:
+                    ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
+                            f'{value:.1f}', ha='center', va='bottom', fontsize=9)
+            
+            # Plot 2: File count comparison by ACES version
             ax2 = axes[0, 1]
-            ax2.bar(cpu_data['os_release'], cpu_data['file_count'], alpha=0.7)
-            ax2.set_title('Number of Test Files')
+            
+            # Get file counts for each OS release for both ACES versions
+            aces_1_files = []
+            aces_2_files = []
+            
+            for os_rel in os_releases:
+                aces_1_os = aces_1_data[aces_1_data['os_release'] == os_rel]
+                aces_2_os = aces_2_data[aces_2_data['os_release'] == os_rel]
+                
+                aces_1_files.append(aces_1_os['file_count'].sum() if len(aces_1_os) > 0 else 0)
+                aces_2_files.append(aces_2_os['file_count'].sum() if len(aces_2_os) > 0 else 0)
+            
+            ax2.bar([i - width/2 for i in x], aces_1_files, width, alpha=0.7, label='ACES 1.0')
+            ax2.bar([i + width/2 for i in x], aces_2_files, width, alpha=0.7, label='ACES 2.0')
+            
+            ax2.set_title('Number of Test Files by ACES Version')
             ax2.set_xlabel('OS Release')
             ax2.set_ylabel('File Count')
+            ax2.set_xticks(x)
+            ax2.set_xticklabels(os_releases)
+            ax2.legend()
             ax2.grid(True, alpha=0.3)
             
-            # Plot 3: Total operations comparison
+            # Plot 3: ACES version comparison for each OS
             ax3 = axes[1, 0]
-            ax3.bar(cpu_data['os_release'], cpu_data['total_operations'], alpha=0.7)
-            ax3.set_title('Total Operations Tested')
-            ax3.set_xlabel('OS Release')
-            ax3.set_ylabel('Total Operations')
-            ax3.grid(True, alpha=0.3)
             
-            # Plot 4: Performance improvement/regression
+            # Calculate ACES 1.0 vs 2.0 performance differences
+            aces_diff_pct = []
+            for i, os_rel in enumerate(os_releases):
+                if aces_1_times[i] > 0 and aces_2_times[i] > 0:
+                    diff_pct = ((aces_2_times[i] - aces_1_times[i]) / aces_1_times[i]) * 100
+                    aces_diff_pct.append(diff_pct)
+                else:
+                    aces_diff_pct.append(0)
+            
+            colors = ['green' if x < 0 else 'red' for x in aces_diff_pct]
+            bars5 = ax3.bar(os_releases, aces_diff_pct, color=colors, alpha=0.7)
+            ax3.set_title('ACES 2.0 vs ACES 1.0 Performance Difference')
+            ax3.set_xlabel('OS Release')
+            ax3.set_ylabel('Performance Difference (%)')
+            ax3.grid(True, alpha=0.3)
+            ax3.axhline(y=0, color='black', linestyle='-', alpha=0.5)
+            
+            # Add value labels
+            for bar, value in zip(bars5, aces_diff_pct):
+                if value != 0:
+                    ax3.text(bar.get_x() + bar.get_width()/2, 
+                            bar.get_height() + (1 if value > 0 else -1),
+                            f'{value:.1f}%', ha='center', 
+                            va='bottom' if value > 0 else 'top', fontsize=9)
+            
+            # Plot 4: Summary statistics
             ax4 = axes[1, 1]
-            if len(cpu_data) == 2:
-                os_releases = cpu_data['os_release'].tolist()
-                times = cpu_data['mean_avg_time'].tolist()
-                
-                # Calculate percentage difference
-                if times[0] != 0:
-                    pct_change = ((times[1] - times[0]) / times[0]) * 100
-                    color = 'green' if pct_change < 0 else 'red'
-                    
-                    ax4.bar(['Performance Change'], [pct_change], color=color, alpha=0.7)
-                    ax4.set_title(f'Performance Change: {os_releases[0]} → {os_releases[1]}')
-                    ax4.set_ylabel('Percentage Change (%)')
-                    ax4.grid(True, alpha=0.3)
-                    ax4.axhline(y=0, color='black', linestyle='-', alpha=0.5)
-                    
-                    # Add value label
-                    ax4.text(0, pct_change + (1 if pct_change > 0 else -1),
-                            f'{pct_change:.1f}%', ha='center', va='bottom' if pct_change > 0 else 'top')
+            ax4.axis('off')
+            
+            # Create summary text
+            summary_text = f"CPU: {cpu_model}\n\n"
+            summary_text += "OS Releases Found:\n"
+            for os_rel in os_releases:
+                summary_text += f"  • {os_rel}\n"
+            
+            summary_text += "\nACES Versions:\n"
+            for aces_ver in aces_versions:
+                aces_data = cpu_data[cpu_data['aces_version'] == aces_ver]
+                avg_time = aces_data['mean_avg_time'].mean()
+                summary_text += f"  • {aces_ver}: {avg_time:.1f}ms avg\n"
+            
+            ax4.text(0.1, 0.9, summary_text, transform=ax4.transAxes, 
+                    fontsize=10, verticalalignment='top', fontfamily='monospace')
             
             plt.tight_layout()
             
@@ -352,7 +535,7 @@ class OCIOAnalyzer:
     
     def create_detailed_comparison_report(self, output_dir: Path) -> None:
         """
-        Create a detailed comparison report.
+        Create a detailed comparison report with ACES version information.
         
         Args:
             output_dir: Directory to save the report
@@ -365,56 +548,81 @@ class OCIOAnalyzer:
         report_file = output_dir / 'os_comparison_report.txt'
         
         with open(report_file, 'w') as f:
-            f.write("OCIO Test Results - OS Performance Comparison Report\n")
-            f.write("=" * 60 + "\n\n")
+            f.write("OCIO Test Results - OS Performance Comparison Report (by ACES Version)\n")
+            f.write("=" * 80 + "\n\n")
             
             # Summary statistics
             f.write("SUMMARY STATISTICS\n")
             f.write("-" * 20 + "\n")
-            f.write(f"Total files analyzed: {len(self.summary_df)}\n")
+            f.write(f"Total file summaries analyzed: {len(self.summary_df)}\n")
             f.write(f"Unique CPU models: {self.summary_df['cpu_model'].nunique()}\n")
             f.write(f"OS releases found: {list(self.summary_df['os_release'].unique())}\n")
+            f.write(f"ACES versions found: {list(self.summary_df['aces_version'].unique())}\n")
             f.write(f"CPU models with multiple OS releases: {len(self.comparison_data['cpu_model'].unique())}\n\n")
             
-            # Detailed comparisons
-            f.write("DETAILED OS COMPARISONS\n")
-            f.write("-" * 25 + "\n")
+            # Overall ACES version performance
+            f.write("OVERALL ACES VERSION PERFORMANCE\n")
+            f.write("-" * 35 + "\n")
+            for aces_version in sorted(self.summary_df['aces_version'].unique()):
+                aces_data = self.summary_df[self.summary_df['aces_version'] == aces_version]
+                avg_time = aces_data['mean_avg_time'].mean()
+                std_time = aces_data['mean_avg_time'].std()
+                f.write(f"{aces_version}: {avg_time:.2f} ± {std_time:.2f} ms\n")
             
-            for cpu_model in self.comparison_data['cpu_model'].unique():
+            # ACES version comparison
+            aces_1_avg = self.summary_df[self.summary_df['aces_version'] == 'ACES 1.0']['mean_avg_time'].mean()
+            aces_2_avg = self.summary_df[self.summary_df['aces_version'] == 'ACES 2.0']['mean_avg_time'].mean()
+            if aces_1_avg > 0:
+                aces_diff_pct = ((aces_2_avg - aces_1_avg) / aces_1_avg) * 100
+                f.write(f"ACES 2.0 vs ACES 1.0 difference: {aces_diff_pct:+.1f}%\n")
+                f.write(f"Better performing ACES version: {'ACES 1.0' if aces_1_avg < aces_2_avg else 'ACES 2.0'}\n\n")
+            
+            # Detailed comparisons by CPU and ACES version
+            f.write("DETAILED OS COMPARISONS BY CPU MODEL AND ACES VERSION\n")
+            f.write("-" * 55 + "\n")
+            
+            for cpu_model in sorted(self.comparison_data['cpu_model'].unique()):
                 cpu_data = self.comparison_data[self.comparison_data['cpu_model'] == cpu_model]
                 
                 f.write(f"\nCPU Model: {cpu_model}\n")
                 f.write("=" * (len(cpu_model) + 12) + "\n")
                 
-                for _, row in cpu_data.iterrows():
-                    f.write(f"  OS Release: {row['os_release']}\n")
-                    f.write(f"    Files: {row['file_count']}\n")
-                    f.write(f"    Mean avg time: {row['mean_avg_time']:.3f} ms\n")
-                    f.write(f"    Std dev: {row['std_avg_time']:.3f} ms\n")
-                    f.write(f"    Total operations: {row['total_operations']}\n")
-                    f.write(f"    Test files: {', '.join(row['files'])}\n\n")
-                
-                # Performance comparison if exactly 2 OS releases
-                if len(cpu_data) == 2:
-                    os1, os2 = cpu_data['os_release'].tolist()
-                    time1, time2 = cpu_data['mean_avg_time'].tolist()
+                # Group by ACES version
+                for aces_version in sorted(cpu_data['aces_version'].unique()):
+                    aces_cpu_data = cpu_data[cpu_data['aces_version'] == aces_version]
                     
-                    if time1 != 0:
-                        pct_change = ((time2 - time1) / time1) * 100
-                        better_os = os1 if time1 < time2 else os2
-                        f.write("  Performance Analysis:\n")
-                        f.write(f"    {os1}: {time1:.3f} ms\n")
-                        f.write(f"    {os2}: {time2:.3f} ms\n")
-                        f.write(f"    Change: {pct_change:.1f}%\n")
-                        f.write(f"    Better performing OS: {better_os}\n")
+                    f.write(f"\n  {aces_version}:\n")
+                    f.write(f"  {'-' * (len(aces_version) + 2)}\n")
+                    
+                    for _, row in aces_cpu_data.iterrows():
+                        f.write(f"    OS Release: {row['os_release']}\n")
+                        f.write(f"      Files: {row['file_count']}\n")
+                        f.write(f"      Mean avg time: {row['mean_avg_time']:.3f} ms\n")
+                        f.write(f"      Std dev: {row['std_avg_time']:.3f} ms\n")
+                        f.write(f"      Total operations: {row['total_operations']}\n")
+                        f.write(f"      Test files: {', '.join(row['files'])}\n\n")
+                    
+                    # Performance comparison if exactly 2 OS releases for this ACES version
+                    if len(aces_cpu_data) == 2:
+                        os1, os2 = aces_cpu_data['os_release'].tolist()
+                        time1, time2 = aces_cpu_data['mean_avg_time'].tolist()
+                        
+                        if time1 != 0:
+                            pct_change = ((time2 - time1) / time1) * 100
+                            better_os = os1 if time1 < time2 else os2
+                            f.write(f"    Performance Analysis ({aces_version}):\n")
+                            f.write(f"      {os1}: {time1:.3f} ms\n")
+                            f.write(f"      {os2}: {time2:.3f} ms\n")
+                            f.write(f"      Change: {pct_change:.1f}%\n")
+                            f.write(f"      Better performing OS: {better_os}\n\n")
                 
-                f.write("\n" + "-" * 40 + "\n")
+                f.write("\n" + "-" * 60 + "\n")
         
         logger.info(f"Detailed comparison report saved to {report_file}")
     
     def create_ocio_version_plots(self, output_dir: Path) -> None:
         """
-        Create OCIO version comparison plots.
+        Create OCIO version comparison plots split by ACES version.
         
         Args:
             output_dir: Directory to save plots
@@ -427,62 +635,152 @@ class OCIOAnalyzer:
         
         # Create OCIO version comparison plot
         fig, axes = plt.subplots(2, 2, figsize=(15, 10))
-        fig.suptitle('OCIO Version Performance Comparison', fontsize=14, fontweight='bold')
+        fig.suptitle('OCIO Version Performance Comparison by ACES Version', fontsize=14, fontweight='bold')
         
-        # Plot 1: Overall performance by OCIO version
+        # Plot 1: Overall performance by OCIO version and ACES version
         ax1 = axes[0, 0]
-        ocio_data = self.all_ocio_comparison_data.sort_values('ocio_version')
-        bars1 = ax1.bar(ocio_data['ocio_version'], ocio_data['mean_avg_time'], 
-                       yerr=ocio_data['std_avg_time'], capsize=5, alpha=0.7)
-        ax1.set_title('Mean Performance by OCIO Version')
+        
+        # Create grouped bar chart
+        ocio_versions = sorted(self.all_ocio_comparison_data['ocio_version'].unique())
+        
+        width = 0.35
+        x = range(len(ocio_versions))
+        
+        # Get data for each OCIO version for both ACES versions
+        aces_1_times = []
+        aces_2_times = []
+        aces_1_stds = []
+        aces_2_stds = []
+        
+        for ocio_ver in ocio_versions:
+            aces_1_data = self.all_ocio_comparison_data[
+                (self.all_ocio_comparison_data['ocio_version'] == ocio_ver) & 
+                (self.all_ocio_comparison_data['aces_version'] == 'ACES 1.0')
+            ]
+            aces_2_data = self.all_ocio_comparison_data[
+                (self.all_ocio_comparison_data['ocio_version'] == ocio_ver) & 
+                (self.all_ocio_comparison_data['aces_version'] == 'ACES 2.0')
+            ]
+            
+            aces_1_times.append(aces_1_data['mean_avg_time'].mean() if len(aces_1_data) > 0 else 0)
+            aces_2_times.append(aces_2_data['mean_avg_time'].mean() if len(aces_2_data) > 0 else 0)
+            aces_1_stds.append(aces_1_data['std_avg_time'].mean() if len(aces_1_data) > 0 else 0)
+            aces_2_stds.append(aces_2_data['std_avg_time'].mean() if len(aces_2_data) > 0 else 0)
+        
+        bars1 = ax1.bar([i - width/2 for i in x], aces_1_times, width, 
+                       yerr=aces_1_stds, capsize=5, alpha=0.7, label='ACES 1.0')
+        bars2 = ax1.bar([i + width/2 for i in x], aces_2_times, width, 
+                       yerr=aces_2_stds, capsize=5, alpha=0.7, label='ACES 2.0')
+        
+        ax1.set_title('Mean Performance by OCIO Version and ACES Version')
         ax1.set_xlabel('OCIO Version')
         ax1.set_ylabel('Mean Average Time (ms)')
+        ax1.set_xticks(x)
+        ax1.set_xticklabels(ocio_versions)
+        ax1.legend()
         ax1.grid(True, alpha=0.3)
         
         # Add value labels on bars
-        for bar, value in zip(bars1, ocio_data['mean_avg_time']):
-            ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
-                    f'{value:.1f}', ha='center', va='bottom')
+        for bar, value in zip(bars1, aces_1_times):
+            if value > 0:
+                ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
+                        f'{value:.1f}', ha='center', va='bottom', fontsize=9)
         
-        # Plot 2: File count by OCIO version
+        for bar, value in zip(bars2, aces_2_times):
+            if value > 0:
+                ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
+                        f'{value:.1f}', ha='center', va='bottom', fontsize=9)
+        
+        # Plot 2: File count by OCIO version and ACES version
         ax2 = axes[0, 1]
-        ax2.bar(ocio_data['ocio_version'], ocio_data['file_count'], alpha=0.7, color='orange')
-        ax2.set_title('Number of Test Files by OCIO Version')
+        
+        # Get file counts for each OCIO version for both ACES versions
+        aces_1_files = []
+        aces_2_files = []
+        
+        for ocio_ver in ocio_versions:
+            aces_1_data = self.all_ocio_comparison_data[
+                (self.all_ocio_comparison_data['ocio_version'] == ocio_ver) & 
+                (self.all_ocio_comparison_data['aces_version'] == 'ACES 1.0')
+            ]
+            aces_2_data = self.all_ocio_comparison_data[
+                (self.all_ocio_comparison_data['ocio_version'] == ocio_ver) & 
+                (self.all_ocio_comparison_data['aces_version'] == 'ACES 2.0')
+            ]
+            
+            aces_1_files.append(aces_1_data['file_count'].sum() if len(aces_1_data) > 0 else 0)
+            aces_2_files.append(aces_2_data['file_count'].sum() if len(aces_2_data) > 0 else 0)
+        
+        ax2.bar([i - width/2 for i in x], aces_1_files, width, alpha=0.7, label='ACES 1.0')
+        ax2.bar([i + width/2 for i in x], aces_2_files, width, alpha=0.7, label='ACES 2.0')
+        
+        ax2.set_title('Number of Test Files by OCIO Version and ACES Version')
         ax2.set_xlabel('OCIO Version')
         ax2.set_ylabel('File Count')
+        ax2.set_xticks(x)
+        ax2.set_xticklabels(ocio_versions)
+        ax2.legend()
         ax2.grid(True, alpha=0.3)
         
-        # Plot 3: Total operations by OCIO version
+        # Plot 3: ACES version comparison for each OCIO version
         ax3 = axes[1, 0]
-        ax3.bar(ocio_data['ocio_version'], ocio_data['total_operations'], alpha=0.7, color='green')
-        ax3.set_title('Total Operations by OCIO Version')
-        ax3.set_xlabel('OCIO Version')
-        ax3.set_ylabel('Total Operations')
-        ax3.grid(True, alpha=0.3)
         
-        # Plot 4: Performance improvement between versions
+        # Calculate ACES 1.0 vs 2.0 performance differences
+        aces_diff_pct = []
+        for i, ocio_ver in enumerate(ocio_versions):
+            if aces_1_times[i] > 0 and aces_2_times[i] > 0:
+                diff_pct = ((aces_2_times[i] - aces_1_times[i]) / aces_1_times[i]) * 100
+                aces_diff_pct.append(diff_pct)
+            else:
+                aces_diff_pct.append(0)
+        
+        colors = ['green' if x < 0 else 'red' for x in aces_diff_pct]
+        bars5 = ax3.bar(ocio_versions, aces_diff_pct, color=colors, alpha=0.7)
+        ax3.set_title('ACES 2.0 vs ACES 1.0 Performance Difference')
+        ax3.set_xlabel('OCIO Version')
+        ax3.set_ylabel('Performance Difference (%)')
+        ax3.grid(True, alpha=0.3)
+        ax3.axhline(y=0, color='black', linestyle='-', alpha=0.5)
+        
+        # Add value labels
+        for bar, value in zip(bars5, aces_diff_pct):
+            if value != 0:
+                ax3.text(bar.get_x() + bar.get_width()/2, 
+                        bar.get_height() + (1 if value > 0 else -1),
+                        f'{value:.1f}%', ha='center', 
+                        va='bottom' if value > 0 else 'top', fontsize=9)
+        
+        # Plot 4: Overall ACES version performance summary
         ax4 = axes[1, 1]
-        if len(ocio_data) >= 2:
-            versions = ocio_data['ocio_version'].tolist()
-            times = ocio_data['mean_avg_time'].tolist()
-            
-            # Calculate relative performance (normalize to first version)
-            if times[0] != 0:
-                relative_perf = [(time / times[0]) * 100 for time in times]
-                colors = ['blue' if perf <= 100 else 'red' for perf in relative_perf]
-                
-                bars4 = ax4.bar(versions, relative_perf, color=colors, alpha=0.7)
-                ax4.set_title('Relative Performance (% of First Version)')
-                ax4.set_xlabel('OCIO Version')
-                ax4.set_ylabel('Relative Performance (%)')
-                ax4.grid(True, alpha=0.3)
-                ax4.axhline(y=100, color='black', linestyle='--', alpha=0.5, label='Baseline')
-                ax4.legend()
-                
-                # Add value labels
-                for bar, value in zip(bars4, relative_perf):
-                    ax4.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1,
-                            f'{value:.1f}%', ha='center', va='bottom')
+        
+        # Calculate overall ACES performance
+        overall_aces_1 = self.all_ocio_comparison_data[
+            self.all_ocio_comparison_data['aces_version'] == 'ACES 1.0'
+        ]['mean_avg_time'].mean()
+        
+        overall_aces_2 = self.all_ocio_comparison_data[
+            self.all_ocio_comparison_data['aces_version'] == 'ACES 2.0'
+        ]['mean_avg_time'].mean()
+        
+        overall_diff = ((overall_aces_2 - overall_aces_1) / overall_aces_1) * 100 if overall_aces_1 > 0 else 0
+        
+        bars6 = ax4.bar(['ACES 1.0', 'ACES 2.0'], [overall_aces_1, overall_aces_2], 
+                       color=['#2E86AB', '#A23B72'], alpha=0.7)
+        ax4.set_title('Overall ACES Version Performance')
+        ax4.set_ylabel('Mean Average Time (ms)')
+        ax4.grid(True, alpha=0.3)
+        
+        # Add value labels
+        for bar, value in zip(bars6, [overall_aces_1, overall_aces_2]):
+            ax4.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
+                    f'{value:.1f}ms', ha='center', va='bottom', fontsize=10)
+        
+        # Add overall difference annotation
+        ax4.annotate(f'Difference: {overall_diff:+.1f}%', 
+                    xy=(0.5, max(overall_aces_1, overall_aces_2) * 1.1),
+                    xycoords='data', ha='center', va='bottom',
+                    fontsize=10, color='red' if overall_diff > 0 else 'green',
+                    fontweight='bold')
         
         plt.tight_layout()
         plt.savefig(output_dir / 'ocio_version_comparison.png', dpi=300, bbox_inches='tight')
@@ -492,7 +790,7 @@ class OCIOAnalyzer:
     
     def create_detailed_cpu_os_ocio_comparison(self, output_dir: Path) -> None:
         """
-        Create detailed CPU+OS comparison chart for OCIO versions 2.4.1 and 2.4.2.
+        Create detailed CPU+OS comparison chart for OCIO versions 2.4.1 and 2.4.2, split by ACES version.
         
         Args:
             output_dir: Directory to save plots
@@ -510,100 +808,116 @@ class OCIOAnalyzer:
             logger.warning("No data found for OCIO versions 2.4.1 and 2.4.2")
             return
         
-        # Create short labels for CPU + OS combinations
-        filtered_data = filtered_data.copy()
-        filtered_data['short_label'] = filtered_data.apply(
-            lambda row: self._create_short_cpu_os_label(row['cpu_model'], row['os_release']), 
-            axis=1
-        )
+        # Create separate plots for each ACES version
+        aces_versions = sorted(filtered_data['aces_version'].unique())
         
-        # Group by CPU+OS combination and check for both OCIO versions
-        comparison_data = []
-        for (cpu_model, os_release), group in filtered_data.groupby(['cpu_model', 'os_release']):
-            versions_present = group['ocio_version'].unique()
-            if len(versions_present) >= 1:  # At least one version present
-                group_data = {
-                    'cpu_model': cpu_model,
-                    'os_release': os_release,
-                    'short_label': group['short_label'].iloc[0]
-                }
-                
-                # Add performance data for each version
-                for version in ocio_versions:
-                    version_data = group[group['ocio_version'] == version]
-                    if len(version_data) > 0:
-                        group_data[f'ocio_{version}'] = version_data['mean_avg_time'].mean()
-                    else:
-                        group_data[f'ocio_{version}'] = None
-                
-                comparison_data.append(group_data)
+        fig, axes = plt.subplots(1, len(aces_versions), figsize=(16, 8))
+        if len(aces_versions) == 1:
+            axes = [axes]
         
-        if not comparison_data:
-            logger.warning("No CPU+OS combinations found with OCIO version data")
-            return
+        fig.suptitle('OCIO Version Performance Comparison by CPU, OS, and ACES Version\n(2.4.1 vs 2.4.2)', 
+                    fontsize=14, fontweight='bold', y=0.98)
         
-        # Create the comparison chart
-        fig, ax = plt.subplots(figsize=(16, 10))
-        
-        # Prepare data for plotting
-        labels = []
-        ocio_241_values = []
-        ocio_242_values = []
-        
-        for item in comparison_data:
-            labels.append(item['short_label'])
-            # Handle None values by converting to 0
-            val_241 = item.get('ocio_2.4.1', None)
-            val_242 = item.get('ocio_2.4.2', None)
-            ocio_241_values.append(val_241 if val_241 is not None else 0)
-            ocio_242_values.append(val_242 if val_242 is not None else 0)
-        
-        # Create bar positions
-        x_pos = range(len(labels))
-        bar_width = 0.35
-        
-        # Create bars
-        bars1 = ax.bar([x - bar_width/2 for x in x_pos], ocio_241_values, 
-                      bar_width, label='OCIO 2.4.1', alpha=0.8, color='#2E86AB')
-        bars2 = ax.bar([x + bar_width/2 for x in x_pos], ocio_242_values, 
-                      bar_width, label='OCIO 2.4.2', alpha=0.8, color='#A23B72')
-        
-        # Customize the plot
-        ax.set_title('OCIO Version Performance Comparison by CPU and OS\n(2.4.1 vs 2.4.2)', 
-                    fontsize=14, fontweight='bold', pad=20)
-        ax.set_xlabel('CPU Model + OS Release', fontsize=12)
-        ax.set_ylabel('Mean Average Time (ms)', fontsize=12)
-        ax.set_xticks(x_pos)
-        ax.set_xticklabels(labels, rotation=45, ha='right')
-        ax.legend(fontsize=10)
-        ax.grid(True, alpha=0.3, axis='y')
-        
-        # Add value labels on bars
-        for bar, value in zip(bars1, ocio_241_values):
-            if value > 0:
-                ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(ocio_241_values)*0.01,
-                       f'{value:.0f}', ha='center', va='bottom', fontsize=9)
-        
-        for bar, value in zip(bars2, ocio_242_values):
-            if value > 0:
-                ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(ocio_242_values)*0.01,
-                       f'{value:.0f}', ha='center', va='bottom', fontsize=9)
-        
-        # Add performance difference annotations
-        for i, (val1, val2) in enumerate(zip(ocio_241_values, ocio_242_values)):
-            if val1 > 0 and val2 > 0:
-                diff_pct = ((val2 - val1) / val1) * 100
-                color = 'green' if diff_pct < 0 else 'red'
-                ax.annotate(f'{diff_pct:+.1f}%', 
-                          xy=(i, max(val1, val2) + max(max(ocio_241_values), max(ocio_242_values))*0.05),
-                          ha='center', va='bottom', fontsize=8, color=color, fontweight='bold')
+        for aces_idx, aces_version in enumerate(aces_versions):
+            ax = axes[aces_idx]
+            
+            # Filter data for this ACES version
+            aces_data = filtered_data[filtered_data['aces_version'] == aces_version]
+            
+            # Create short labels for CPU + OS combinations
+            aces_data = aces_data.copy()
+            aces_data['short_label'] = aces_data.apply(
+                lambda row: self._create_short_cpu_os_label(row['cpu_model'], row['os_release']), 
+                axis=1
+            )
+            
+            # Group by CPU+OS combination and check for both OCIO versions
+            comparison_data = []
+            for (cpu_model, os_release), group in aces_data.groupby(['cpu_model', 'os_release']):
+                versions_present = group['ocio_version'].unique()
+                if len(versions_present) >= 1:  # At least one version present
+                    group_data = {
+                        'cpu_model': cpu_model,
+                        'os_release': os_release,
+                        'short_label': group['short_label'].iloc[0]
+                    }
+                    
+                    # Add performance data for each version
+                    for version in ocio_versions:
+                        version_data = group[group['ocio_version'] == version]
+                        if len(version_data) > 0:
+                            group_data[f'ocio_{version}'] = version_data['mean_avg_time'].mean()
+                        else:
+                            group_data[f'ocio_{version}'] = None
+                    
+                    comparison_data.append(group_data)
+            
+            if not comparison_data:
+                ax.text(0.5, 0.5, f'No data available for {aces_version}', 
+                       transform=ax.transAxes, ha='center', va='center', fontsize=12)
+                ax.set_title(f'{aces_version}')
+                continue
+            
+            # Prepare data for plotting
+            labels = []
+            ocio_241_values = []
+            ocio_242_values = []
+            
+            for item in comparison_data:
+                labels.append(item['short_label'])
+                # Handle None values by converting to 0
+                val_241 = item.get('ocio_2.4.1', None)
+                val_242 = item.get('ocio_2.4.2', None)
+                ocio_241_values.append(val_241 if val_241 is not None else 0)
+                ocio_242_values.append(val_242 if val_242 is not None else 0)
+            
+            # Create bar positions
+            x_pos = range(len(labels))
+            bar_width = 0.35
+            
+            # Create bars
+            bars1 = ax.bar([x - bar_width/2 for x in x_pos], ocio_241_values, 
+                          bar_width, label='OCIO 2.4.1', alpha=0.8, color='#2E86AB')
+            bars2 = ax.bar([x + bar_width/2 for x in x_pos], ocio_242_values, 
+                          bar_width, label='OCIO 2.4.2', alpha=0.8, color='#A23B72')
+            
+            # Customize the plot
+            ax.set_title(f'{aces_version}', fontsize=12, fontweight='bold')
+            ax.set_xlabel('CPU Model + OS Release', fontsize=10)
+            if aces_idx == 0:
+                ax.set_ylabel('Mean Average Time (ms)', fontsize=10)
+            ax.set_xticks(x_pos)
+            ax.set_xticklabels(labels, rotation=45, ha='right', fontsize=9)
+            ax.legend(fontsize=9)
+            ax.grid(True, alpha=0.3, axis='y')
+            
+            # Add value labels on bars
+            max_val = max(max(ocio_241_values + ocio_242_values, default=0), 1)
+            for bar, value in zip(bars1, ocio_241_values):
+                if value > 0:
+                    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max_val*0.01,
+                           f'{value:.0f}', ha='center', va='bottom', fontsize=8)
+            
+            for bar, value in zip(bars2, ocio_242_values):
+                if value > 0:
+                    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max_val*0.01,
+                           f'{value:.0f}', ha='center', va='bottom', fontsize=8)
+            
+            # Add performance difference annotations
+            for i, (val1, val2) in enumerate(zip(ocio_241_values, ocio_242_values)):
+                if val1 > 0 and val2 > 0:
+                    diff_pct = ((val2 - val1) / val1) * 100
+                    color = 'green' if diff_pct < 0 else 'red'
+                    ax.annotate(f'{diff_pct:+.1f}%', 
+                              xy=(i, max(val1, val2) + max_val*0.05),
+                              ha='center', va='bottom', fontsize=7, color=color, fontweight='bold')
         
         plt.tight_layout()
-        plt.savefig(output_dir / 'ocio_241_vs_242_cpu_os_comparison.png', 
+        plt.savefig(output_dir / 'ocio_241_vs_242_cpu_os_aces_comparison.png', 
                    dpi=300, bbox_inches='tight')
         plt.close()
         
-        logger.info("Detailed CPU+OS OCIO version comparison plot saved")
+        logger.info("Detailed CPU+OS OCIO version comparison plot (split by ACES) saved")
     
     def _create_short_cpu_os_label(self, cpu_model: str, os_release: str) -> str:
         """
@@ -656,7 +970,7 @@ class OCIOAnalyzer:
 
     def create_detailed_ocio_comparison_report(self, output_dir: Path) -> None:
         """
-        Create a detailed OCIO version comparison report.
+        Create a detailed OCIO version comparison report with ACES version information.
         
         Args:
             output_dir: Directory to save the report
@@ -670,14 +984,24 @@ class OCIOAnalyzer:
         report_file = output_dir / 'ocio_version_comparison_report.txt'
         
         with open(report_file, 'w') as f:
-            f.write("OCIO Test Results - OCIO Version Performance Comparison Report\n")
-            f.write("=" * 70 + "\n\n")
+            f.write("OCIO Test Results - OCIO Version Performance Comparison Report (by ACES Version)\n")
+            f.write("=" * 85 + "\n\n")
             
             # Summary statistics
             f.write("SUMMARY STATISTICS\n")
             f.write("-" * 20 + "\n")
-            f.write(f"Total OCIO versions found: {len(self.all_ocio_comparison_data)}\n")
+            f.write(f"Total OCIO-ACES version combinations: {len(self.all_ocio_comparison_data)}\n")
             f.write(f"OCIO versions: {list(self.all_ocio_comparison_data['ocio_version'].unique())}\n")
+            f.write(f"ACES versions: {list(self.all_ocio_comparison_data['aces_version'].unique())}\n")
+            
+            # Overall ACES version performance
+            f.write("\nOVERALL ACES VERSION PERFORMANCE\n")
+            f.write("-" * 35 + "\n")
+            for aces_version in sorted(self.all_ocio_comparison_data['aces_version'].unique()):
+                aces_data = self.all_ocio_comparison_data[self.all_ocio_comparison_data['aces_version'] == aces_version]
+                avg_time = aces_data['mean_avg_time'].mean()
+                std_time = aces_data['mean_avg_time'].std()
+                f.write(f"{aces_version}: {avg_time:.2f} ± {std_time:.2f} ms\n")
             
             # Get overall performance comparison
             sorted_data = self.all_ocio_comparison_data.sort_values('mean_avg_time')
@@ -687,32 +1011,55 @@ class OCIOAnalyzer:
             if fastest_version['mean_avg_time'] != 0:
                 perf_diff = ((slowest_version['mean_avg_time'] - fastest_version['mean_avg_time']) / 
                            fastest_version['mean_avg_time']) * 100
-                f.write(f"Fastest OCIO version: {fastest_version['ocio_version']} ({fastest_version['mean_avg_time']:.1f} ms)\n")
-                f.write(f"Slowest OCIO version: {slowest_version['ocio_version']} ({slowest_version['mean_avg_time']:.1f} ms)\n")
+                f.write(f"\nFastest combination: {fastest_version['ocio_version']} + {fastest_version['aces_version']} ({fastest_version['mean_avg_time']:.1f} ms)\n")
+                f.write(f"Slowest combination: {slowest_version['ocio_version']} + {slowest_version['aces_version']} ({slowest_version['mean_avg_time']:.1f} ms)\n")
                 f.write(f"Performance difference: {perf_diff:.1f}%\n\n")
             
-            # Detailed version comparisons
-            f.write("DETAILED OCIO VERSION ANALYSIS\n")
-            f.write("-" * 35 + "\n")
+            # Detailed version comparisons by ACES version
+            f.write("DETAILED OCIO VERSION ANALYSIS BY ACES VERSION\n")
+            f.write("-" * 50 + "\n")
             
-            for _, row in self.all_ocio_comparison_data.sort_values('ocio_version').iterrows():
-                f.write(f"\nOCIO Version: {row['ocio_version']}\n")
-                f.write("=" * (len(row['ocio_version']) + 15) + "\n")
-                f.write(f"  Files tested: {row['file_count']}\n")
-                f.write(f"  Mean avg time: {row['mean_avg_time']:.3f} ms\n")
-                f.write(f"  Std deviation: {row['std_avg_time']:.3f} ms\n")
-                f.write(f"  Median time: {row['median_avg_time']:.3f} ms\n")
-                f.write(f"  Total operations: {row['total_operations']}\n")
-                f.write(f"  CPU models tested: {len(row['cpu_models'])}\n")
-                f.write(f"  OS releases tested: {row['os_releases']}\n")
-                f.write(f"  CPU models: {', '.join([cpu for cpu in row['cpu_models'] if cpu != 'Unknown'])}\n")
+            for aces_version in sorted(self.all_ocio_comparison_data['aces_version'].unique()):
+                f.write(f"\n{aces_version}:\n")
+                f.write("=" * (len(aces_version) + 2) + "\n")
                 
-                # Calculate relative performance vs fastest
-                if fastest_version['mean_avg_time'] != 0:
-                    rel_perf = (row['mean_avg_time'] / fastest_version['mean_avg_time']) * 100
-                    f.write(f"  Relative performance: {rel_perf:.1f}% of fastest version\n")
+                aces_data = self.all_ocio_comparison_data[
+                    self.all_ocio_comparison_data['aces_version'] == aces_version
+                ].sort_values('ocio_version')
                 
-                f.write("\n" + "-" * 50 + "\n")
+                for _, row in aces_data.iterrows():
+                    f.write(f"\n  OCIO Version: {row['ocio_version']}\n")
+                    f.write(f"  {'-' * (len(row['ocio_version']) + 17)}\n")
+                    f.write(f"    Files tested: {row['file_count']}\n")
+                    f.write(f"    Mean avg time: {row['mean_avg_time']:.3f} ms\n")
+                    f.write(f"    Std deviation: {row['std_avg_time']:.3f} ms\n")
+                    f.write(f"    Median time: {row['median_avg_time']:.3f} ms\n")
+                    f.write(f"    Total operations: {row['total_operations']}\n")
+                    f.write(f"    CPU models tested: {len(row['cpu_models'])}\n")
+                    f.write(f"    OS releases tested: {row['os_releases']}\n")
+                    f.write(f"    CPU models: {', '.join([cpu for cpu in row['cpu_models'] if cpu != 'Unknown'])}\n")
+                    
+                    # Calculate relative performance vs fastest overall
+                    if fastest_version['mean_avg_time'] != 0:
+                        rel_perf = (row['mean_avg_time'] / fastest_version['mean_avg_time']) * 100
+                        f.write(f"    Relative performance: {rel_perf:.1f}% of fastest overall\n")
+                
+                # OCIO version comparison within this ACES version
+                if len(aces_data) > 1:
+                    f.write(f"\n  OCIO Version Comparison within {aces_version}:\n")
+                    f.write(f"  {'-' * (35 + len(aces_version))}\n")
+                    
+                    fastest_aces = aces_data.iloc[0]
+                    slowest_aces = aces_data.iloc[-1]
+                    
+                    if fastest_aces['mean_avg_time'] != 0:
+                        aces_perf_diff = ((slowest_aces['mean_avg_time'] - fastest_aces['mean_avg_time']) / 
+                                        fastest_aces['mean_avg_time']) * 100
+                        f.write(f"    Fastest: {fastest_aces['ocio_version']} ({fastest_aces['mean_avg_time']:.1f} ms)\n")
+                        f.write(f"    Slowest: {slowest_aces['ocio_version']} ({slowest_aces['mean_avg_time']:.1f} ms)\n")
+                        f.write(f"    Performance difference: {aces_perf_diff:.1f}%\n")
+                
+                f.write("\n" + "-" * 60 + "\n")
         
         logger.info(f"Detailed OCIO version comparison report saved to {report_file}")
     
