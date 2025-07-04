@@ -23,6 +23,7 @@ class TestResult:
     
     file_name: str
     os_release: str
+    cpu_model: str
     ocio_version: str
     config_version: str
     source_colorspace: str
@@ -56,6 +57,7 @@ class OCIOTestParser:
             r'(.+?):\s+For (\d+) iterations, it took: \[([0-9.,\s]+)\] ms'
         )
         self.os_release_pattern = re.compile(r'_r(\d+)(?:_|\.)')
+        self.cpu_model_pattern = re.compile(r'model name\s*:\s*(.+)')
     
     def _extract_os_release(self, file_name: str) -> str:
         """
@@ -70,6 +72,21 @@ class OCIOTestParser:
         match = self.os_release_pattern.search(file_name)
         if match:
             return f"r{match.group(1)}"
+        return "Unknown"
+    
+    def _extract_cpu_model(self, content: str) -> str:
+        """
+        Extract CPU model name from file content.
+        
+        Args:
+            content: Content of the file
+            
+        Returns:
+            CPU model name or 'Unknown' if not found
+        """
+        match = self.cpu_model_pattern.search(content)
+        if match:
+            return match.group(1).strip()
         return "Unknown"
     
     def parse_file(self, file_path: Path) -> List[TestResult]:
@@ -96,6 +113,9 @@ class OCIOTestParser:
                 logger.error(f"Failed to read file {file_path}: {e}")
                 return results
         
+        # Extract CPU model information from the entire file content
+        cpu_model = self._extract_cpu_model(content)
+        
         # Split content by test runs (separated by OCIO Version)
         test_runs = re.split(r'\n\nOCIO Version:', content)
         
@@ -107,18 +127,19 @@ class OCIOTestParser:
             if i > 0:
                 test_run = "OCIO Version:" + test_run
             
-            test_results = self._parse_test_run(test_run, file_path.name)
+            test_results = self._parse_test_run(test_run, file_path.name, cpu_model)
             results.extend(test_results)
         
         return results
     
-    def _parse_test_run(self, content: str, file_name: str) -> List[TestResult]:
+    def _parse_test_run(self, content: str, file_name: str, cpu_model: str) -> List[TestResult]:
         """
         Parse a single test run within a file.
         
         Args:
             content: Content of the test run
             file_name: Name of the file being parsed
+            cpu_model: CPU model name extracted from the file
             
         Returns:
             List of TestResult objects for this test run
@@ -154,6 +175,7 @@ class OCIOTestParser:
                 result = TestResult(
                     file_name=file_name,
                     os_release=self._extract_os_release(file_name),
+                    cpu_model=cpu_model,
                     ocio_version=ocio_version,
                     config_version=config_version,
                     source_colorspace=source_colorspace,
@@ -209,7 +231,7 @@ class OCIOTestParser:
         logger.info(f"Saving {len(results)} results to {output_file}")
         
         fieldnames = [
-            'file_name', 'os_release', 'ocio_version', 'config_version', 'source_colorspace',
+            'file_name', 'os_release', 'cpu_model', 'ocio_version', 'config_version', 'source_colorspace',
             'target_colorspace', 'operation', 'iteration_count', 'min_time',
             'max_time', 'avg_time', 'timing_values'
         ]

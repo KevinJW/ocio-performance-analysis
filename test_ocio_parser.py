@@ -102,10 +102,20 @@ Create the config identifier:		For 5 iterations, it took: [5.1, 5.2, 5.3, 5.4, 5
         assert parser._extract_os_release("OCIO_2.4_ACES_tests_r9_sys2043.txt") == "r9"
         assert parser._extract_os_release("OCIO_2.4_ACES_tests_r7_sys2034.ldn.vfx.framestore.com.txt") == "r7"
         assert parser._extract_os_release("some_file_without_release.txt") == "Unknown"
+        
+        # Test CPU model extraction
+        cpu_content_with_model = "model name: Intel(R) Xeon(R) CPU E5-2667 v4 @ 3.20GHz"
+        assert parser._extract_cpu_model(cpu_content_with_model) == "Intel(R) Xeon(R) CPU E5-2667 v4 @ 3.20GHz"
+        
+        cpu_content_with_spacing = "model name    : Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz"
+        assert parser._extract_cpu_model(cpu_content_with_spacing) == "Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz"
+        
+        cpu_content_no_model = "some other content without cpu model"
+        assert parser._extract_cpu_model(cpu_content_no_model) == "Unknown"
     
     def test_parse_test_run(self, parser, sample_test_data):
         """Test parsing a single test run."""
-        results = parser._parse_test_run(sample_test_data, "test_file.txt")
+        results = parser._parse_test_run(sample_test_data, "test_file.txt", "Unknown")
         
         # Should have 5 results (3 processing + 2 image processing)
         assert len(results) == 5
@@ -154,7 +164,7 @@ Create the config identifier:		For 5 iterations, it took: [5.1, 5.2, 5.3, 5.4, 5
     
     def test_empty_content(self, parser):
         """Test parsing empty content."""
-        results = parser._parse_test_run("", "empty.txt")
+        results = parser._parse_test_run("", "empty.txt", "Unknown")
         assert len(results) == 0
     
     def test_malformed_timing_values(self, parser):
@@ -165,7 +175,7 @@ OCIO Config. version: 2.4
 Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
 Create the config identifier:		For 10 iterations, it took: [invalid, 1.23, text] ms
 """
-        results = parser._parse_test_run(malformed_data, "malformed.txt")
+        results = parser._parse_test_run(malformed_data, "malformed.txt", "Unknown")
         
         # Should still create a result with valid timing values
         assert len(results) == 0
@@ -209,7 +219,7 @@ Create the config identifier:		For 10 iterations, it took: [invalid, 1.23, text]
     
     def test_save_to_csv(self, parser, sample_test_data):
         """Test saving results to CSV file."""
-        results = parser._parse_test_run(sample_test_data, "test.txt")
+        results = parser._parse_test_run(sample_test_data, "test.txt", "Unknown")
         
         with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as tmp_file:
             tmp_file_path = Path(tmp_file.name)
@@ -228,6 +238,7 @@ Create the config identifier:		For 10 iterations, it took: [invalid, 1.23, text]
             first_row = csv_results[0]
             assert first_row['file_name'] == 'test.txt'
             assert first_row['os_release'] == 'Unknown'  # test.txt doesn't have r7/r9 pattern
+            assert first_row['cpu_model'] == 'Unknown'  # test data doesn't have CPU model
             assert first_row['ocio_version'] == '2.4.1'
             assert first_row['config_version'] == '2.4'
             assert first_row['operation'] == 'Create the config identifier'
@@ -260,6 +271,7 @@ class TestTestResult:
         result = TestResult(
             file_name="test.txt",
             os_release="r7",
+            cpu_model="Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz",
             ocio_version="2.4.1",
             config_version="2.4",
             source_colorspace="ACES2065-1",
@@ -282,6 +294,7 @@ class TestTestResult:
         result = TestResult(
             file_name="test.txt",
             os_release="r7",
+            cpu_model="Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz",
             ocio_version="2.4.1",
             config_version="2.4",
             source_colorspace="ACES2065-1",
