@@ -790,7 +790,7 @@ class OCIOAnalyzer:
     
     def create_detailed_cpu_os_ocio_comparison(self, output_dir: Path) -> None:
         """
-        Create detailed CPU+OS comparison chart for OCIO versions 2.4.1 and 2.4.2, split by ACES version.
+        Create detailed CPU+OS comparison chart for OCIO versions 2.4.1 and 2.4.2, with both ACES versions on the same scale.
         
         Args:
             output_dir: Directory to save plots
@@ -808,116 +808,339 @@ class OCIOAnalyzer:
             logger.warning("No data found for OCIO versions 2.4.1 and 2.4.2")
             return
         
-        # Create separate plots for each ACES version
-        aces_versions = sorted(filtered_data['aces_version'].unique())
+        # Create short labels for CPU + OS combinations
+        filtered_data = filtered_data.copy()
+        filtered_data['short_label'] = filtered_data.apply(
+            lambda row: self._create_short_cpu_os_label(row['cpu_model'], row['os_release']), 
+            axis=1
+        )
         
-        fig, axes = plt.subplots(1, len(aces_versions), figsize=(16, 8))
-        if len(aces_versions) == 1:
-            axes = [axes]
-        
-        fig.suptitle('OCIO Version Performance Comparison by CPU, OS, and ACES Version\n(2.4.1 vs 2.4.2)', 
-                    fontsize=14, fontweight='bold', y=0.98)
-        
-        for aces_idx, aces_version in enumerate(aces_versions):
-            ax = axes[aces_idx]
-            
-            # Filter data for this ACES version
-            aces_data = filtered_data[filtered_data['aces_version'] == aces_version]
-            
-            # Create short labels for CPU + OS combinations
-            aces_data = aces_data.copy()
-            aces_data['short_label'] = aces_data.apply(
-                lambda row: self._create_short_cpu_os_label(row['cpu_model'], row['os_release']), 
-                axis=1
-            )
-            
-            # Group by CPU+OS combination and check for both OCIO versions
-            comparison_data = []
-            for (cpu_model, os_release), group in aces_data.groupby(['cpu_model', 'os_release']):
-                versions_present = group['ocio_version'].unique()
-                if len(versions_present) >= 1:  # At least one version present
-                    group_data = {
-                        'cpu_model': cpu_model,
-                        'os_release': os_release,
-                        'short_label': group['short_label'].iloc[0]
-                    }
-                    
-                    # Add performance data for each version
-                    for version in ocio_versions:
-                        version_data = group[group['ocio_version'] == version]
+        # Group by CPU+OS combination and collect data for both ACES versions and OCIO versions
+        comparison_data = []
+        for (cpu_model, os_release), group in filtered_data.groupby(['cpu_model', 'os_release']):
+            versions_present = group['ocio_version'].unique()
+            if len(versions_present) >= 1:  # At least one version present
+                group_data = {
+                    'cpu_model': cpu_model,
+                    'os_release': os_release,
+                    'short_label': group['short_label'].iloc[0]
+                }
+                
+                # Add performance data for each ACES version and OCIO version combination
+                for aces_version in ['ACES 1.0', 'ACES 2.0']:
+                    for ocio_version in ocio_versions:
+                        version_data = group[
+                            (group['ocio_version'] == ocio_version) & 
+                            (group['aces_version'] == aces_version)
+                        ]
                         if len(version_data) > 0:
-                            group_data[f'ocio_{version}'] = version_data['mean_avg_time'].mean()
+                            group_data[f'{aces_version}_{ocio_version}'] = version_data['mean_avg_time'].mean()
                         else:
-                            group_data[f'ocio_{version}'] = None
-                    
-                    comparison_data.append(group_data)
+                            group_data[f'{aces_version}_{ocio_version}'] = None
+                
+                comparison_data.append(group_data)
+        
+        if not comparison_data:
+            logger.warning("No comparison data available for OCIO versions 2.4.1 and 2.4.2")
+            return
+        
+        # Create single merged chart
+        fig, ax = plt.subplots(figsize=(20, 10))
+        
+        # Prepare data for plotting
+        labels = []
+        aces_1_ocio_241_values = []
+        aces_1_ocio_242_values = []
+        aces_2_ocio_241_values = []
+        aces_2_ocio_242_values = []
+        
+        for item in comparison_data:
+            labels.append(item['short_label'])
             
-            if not comparison_data:
-                ax.text(0.5, 0.5, f'No data available for {aces_version}', 
-                       transform=ax.transAxes, ha='center', va='center', fontsize=12)
-                ax.set_title(f'{aces_version}')
-                continue
+            # Handle None values by converting to 0
+            val_aces1_241 = item.get('ACES 1.0_2.4.1', None)
+            val_aces1_242 = item.get('ACES 1.0_2.4.2', None)
+            val_aces2_241 = item.get('ACES 2.0_2.4.1', None)
+            val_aces2_242 = item.get('ACES 2.0_2.4.2', None)
             
-            # Prepare data for plotting
-            labels = []
-            ocio_241_values = []
-            ocio_242_values = []
-            
-            for item in comparison_data:
-                labels.append(item['short_label'])
-                # Handle None values by converting to 0
-                val_241 = item.get('ocio_2.4.1', None)
-                val_242 = item.get('ocio_2.4.2', None)
-                ocio_241_values.append(val_241 if val_241 is not None else 0)
-                ocio_242_values.append(val_242 if val_242 is not None else 0)
-            
-            # Create bar positions
-            x_pos = range(len(labels))
-            bar_width = 0.35
-            
-            # Create bars
-            bars1 = ax.bar([x - bar_width/2 for x in x_pos], ocio_241_values, 
-                          bar_width, label='OCIO 2.4.1', alpha=0.8, color='#2E86AB')
-            bars2 = ax.bar([x + bar_width/2 for x in x_pos], ocio_242_values, 
-                          bar_width, label='OCIO 2.4.2', alpha=0.8, color='#A23B72')
-            
-            # Customize the plot
-            ax.set_title(f'{aces_version}', fontsize=12, fontweight='bold')
-            ax.set_xlabel('CPU Model + OS Release', fontsize=10)
-            if aces_idx == 0:
-                ax.set_ylabel('Mean Average Time (ms)', fontsize=10)
-            ax.set_xticks(x_pos)
-            ax.set_xticklabels(labels, rotation=45, ha='right', fontsize=9)
-            ax.legend(fontsize=9)
-            ax.grid(True, alpha=0.3, axis='y')
-            
-            # Add value labels on bars
-            max_val = max(max(ocio_241_values + ocio_242_values, default=0), 1)
-            for bar, value in zip(bars1, ocio_241_values):
+            aces_1_ocio_241_values.append(val_aces1_241 if val_aces1_241 is not None else 0)
+            aces_1_ocio_242_values.append(val_aces1_242 if val_aces1_242 is not None else 0)
+            aces_2_ocio_241_values.append(val_aces2_241 if val_aces2_241 is not None else 0)
+            aces_2_ocio_242_values.append(val_aces2_242 if val_aces2_242 is not None else 0)
+        
+        # Create bar positions
+        x_pos = range(len(labels))
+        bar_width = 0.2
+        
+        # Create bars for all combinations
+        bars1 = ax.bar([x - 1.5*bar_width for x in x_pos], aces_1_ocio_241_values, 
+                      bar_width, label='ACES 1.0 + OCIO 2.4.1', alpha=0.8, color='#1f77b4')
+        bars2 = ax.bar([x - 0.5*bar_width for x in x_pos], aces_1_ocio_242_values, 
+                      bar_width, label='ACES 1.0 + OCIO 2.4.2', alpha=0.8, color='#ff7f0e')
+        bars3 = ax.bar([x + 0.5*bar_width for x in x_pos], aces_2_ocio_241_values, 
+                      bar_width, label='ACES 2.0 + OCIO 2.4.1', alpha=0.8, color='#2ca02c')
+        bars4 = ax.bar([x + 1.5*bar_width for x in x_pos], aces_2_ocio_242_values, 
+                      bar_width, label='ACES 2.0 + OCIO 2.4.2', alpha=0.8, color='#d62728')
+        
+        # Customize the plot
+        ax.set_title('OCIO Version Performance Comparison by CPU, OS, and ACES Version\n(Merged Chart: 2.4.1 vs 2.4.2)', 
+                    fontsize=14, fontweight='bold', pad=20)
+        ax.set_xlabel('CPU Model + OS Release', fontsize=12)
+        ax.set_ylabel('Mean Average Time (ms)', fontsize=12)
+        ax.set_xticks(x_pos)
+        ax.set_xticklabels(labels, rotation=45, ha='right', fontsize=10)
+        ax.legend(fontsize=10, loc='upper right')
+        ax.grid(True, alpha=0.3, axis='y')
+        
+        # Add value labels on bars
+        all_values = aces_1_ocio_241_values + aces_1_ocio_242_values + aces_2_ocio_241_values + aces_2_ocio_242_values
+        max_val = max(all_values) if all_values else 1
+        
+        for bars, values in [(bars1, aces_1_ocio_241_values), (bars2, aces_1_ocio_242_values), 
+                            (bars3, aces_2_ocio_241_values), (bars4, aces_2_ocio_242_values)]:
+            for bar, value in zip(bars, values):
                 if value > 0:
                     ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max_val*0.01,
-                           f'{value:.0f}', ha='center', va='bottom', fontsize=8)
+                           f'{value:.0f}', ha='center', va='bottom', fontsize=8, rotation=90)
+        
+        # Add performance difference annotations between OCIO versions for each ACES version
+        for i in range(len(labels)):
+            # ACES 1.0 comparison
+            if aces_1_ocio_241_values[i] > 0 and aces_1_ocio_242_values[i] > 0:
+                diff_pct = ((aces_1_ocio_242_values[i] - aces_1_ocio_241_values[i]) / aces_1_ocio_241_values[i]) * 100
+                color = 'green' if diff_pct < 0 else 'red'
+                mid_x = i - bar_width
+                mid_y = max(aces_1_ocio_241_values[i], aces_1_ocio_242_values[i]) + max_val*0.08
+                ax.annotate(f'{diff_pct:+.1f}%', 
+                          xy=(mid_x, mid_y), ha='center', va='bottom', 
+                          fontsize=7, color=color, fontweight='bold')
             
-            for bar, value in zip(bars2, ocio_242_values):
-                if value > 0:
-                    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max_val*0.01,
-                           f'{value:.0f}', ha='center', va='bottom', fontsize=8)
-            
-            # Add performance difference annotations
-            for i, (val1, val2) in enumerate(zip(ocio_241_values, ocio_242_values)):
-                if val1 > 0 and val2 > 0:
-                    diff_pct = ((val2 - val1) / val1) * 100
-                    color = 'green' if diff_pct < 0 else 'red'
-                    ax.annotate(f'{diff_pct:+.1f}%', 
-                              xy=(i, max(val1, val2) + max_val*0.05),
-                              ha='center', va='bottom', fontsize=7, color=color, fontweight='bold')
+            # ACES 2.0 comparison  
+            if aces_2_ocio_241_values[i] > 0 and aces_2_ocio_242_values[i] > 0:
+                diff_pct = ((aces_2_ocio_242_values[i] - aces_2_ocio_241_values[i]) / aces_2_ocio_241_values[i]) * 100
+                color = 'green' if diff_pct < 0 else 'red'
+                mid_x = i + bar_width
+                mid_y = max(aces_2_ocio_241_values[i], aces_2_ocio_242_values[i]) + max_val*0.08
+                ax.annotate(f'{diff_pct:+.1f}%', 
+                          xy=(mid_x, mid_y), ha='center', va='bottom', 
+                          fontsize=7, color=color, fontweight='bold')
+        
+        # Add summary statistics text box
+        aces_1_avg_241 = sum(v for v in aces_1_ocio_241_values if v > 0) / len([v for v in aces_1_ocio_241_values if v > 0]) if any(v > 0 for v in aces_1_ocio_241_values) else 0
+        aces_1_avg_242 = sum(v for v in aces_1_ocio_242_values if v > 0) / len([v for v in aces_1_ocio_242_values if v > 0]) if any(v > 0 for v in aces_1_ocio_242_values) else 0
+        aces_2_avg_241 = sum(v for v in aces_2_ocio_241_values if v > 0) / len([v for v in aces_2_ocio_241_values if v > 0]) if any(v > 0 for v in aces_2_ocio_241_values) else 0
+        aces_2_avg_242 = sum(v for v in aces_2_ocio_242_values if v > 0) / len([v for v in aces_2_ocio_242_values if v > 0]) if any(v > 0 for v in aces_2_ocio_242_values) else 0
+        
+        stats_text = f"""Performance Summary:
+ACES 1.0 + OCIO 2.4.1: {aces_1_avg_241:.1f} ms
+ACES 1.0 + OCIO 2.4.2: {aces_1_avg_242:.1f} ms
+ACES 2.0 + OCIO 2.4.1: {aces_2_avg_241:.1f} ms
+ACES 2.0 + OCIO 2.4.2: {aces_2_avg_242:.1f} ms"""
+        
+        ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=10,
+                verticalalignment='top', bbox=dict(boxstyle='round,pad=0.5', 
+                                                  facecolor='lightgray', alpha=0.8),
+                fontfamily='monospace')
         
         plt.tight_layout()
         plt.savefig(output_dir / 'ocio_241_vs_242_cpu_os_aces_comparison.png', 
                    dpi=300, bbox_inches='tight')
         plt.close()
         
-        logger.info("Detailed CPU+OS OCIO version comparison plot (split by ACES) saved")
+        logger.info("Detailed CPU+OS OCIO version comparison plot (merged ACES versions) saved")
+    
+    def create_comprehensive_aces_comparison(self, output_dir: Path) -> None:
+        """
+        Create a comprehensive single bar chart comparing ACES 1.0 vs 2.0 across all dimensions.
+        
+        Args:
+            output_dir: Directory to save plots
+        """
+        output_dir.mkdir(exist_ok=True)
+        
+        if self.summary_df is None:
+            raise ValueError("Summary data not available. Call summarize_by_filename() first.")
+        
+        # Prepare data for comprehensive comparison
+        comparison_categories = []
+        aces_1_values = []
+        aces_2_values = []
+        
+        # 1. Overall ACES performance
+        overall_aces_1 = self.summary_df[self.summary_df['aces_version'] == 'ACES 1.0']['mean_avg_time'].mean()
+        overall_aces_2 = self.summary_df[self.summary_df['aces_version'] == 'ACES 2.0']['mean_avg_time'].mean()
+        
+        comparison_categories.append('Overall\nPerformance')
+        aces_1_values.append(overall_aces_1)
+        aces_2_values.append(overall_aces_2)
+        
+        # 2. Performance by OS Release
+        for os_release in sorted(self.summary_df['os_release'].unique()):
+            os_aces_1 = self.summary_df[
+                (self.summary_df['aces_version'] == 'ACES 1.0') & 
+                (self.summary_df['os_release'] == os_release)
+            ]['mean_avg_time'].mean()
+            
+            os_aces_2 = self.summary_df[
+                (self.summary_df['aces_version'] == 'ACES 2.0') & 
+                (self.summary_df['os_release'] == os_release)
+            ]['mean_avg_time'].mean()
+            
+            if not pd.isna(os_aces_1) and not pd.isna(os_aces_2):
+                comparison_categories.append(f'OS {os_release}')
+                aces_1_values.append(os_aces_1)
+                aces_2_values.append(os_aces_2)
+        
+        # 3. Performance by OCIO Version
+        for ocio_version in sorted(self.summary_df['ocio_version'].unique()):
+            ocio_aces_1 = self.summary_df[
+                (self.summary_df['aces_version'] == 'ACES 1.0') & 
+                (self.summary_df['ocio_version'] == ocio_version)
+            ]['mean_avg_time'].mean()
+            
+            ocio_aces_2 = self.summary_df[
+                (self.summary_df['aces_version'] == 'ACES 2.0') & 
+                (self.summary_df['ocio_version'] == ocio_version)
+            ]['mean_avg_time'].mean()
+            
+            if not pd.isna(ocio_aces_1) and not pd.isna(ocio_aces_2):
+                comparison_categories.append(f'OCIO {ocio_version}')
+                aces_1_values.append(ocio_aces_1)
+                aces_2_values.append(ocio_aces_2)
+        
+        # 4. Performance by CPU Model (top performing ones)
+        cpu_data = self.summary_df[self.summary_df['cpu_model'] != 'Unknown']
+        cpu_models = cpu_data['cpu_model'].value_counts().head(4).index  # Top 4 most tested CPUs
+        
+        for cpu_model in cpu_models:
+            cpu_aces_1 = self.summary_df[
+                (self.summary_df['aces_version'] == 'ACES 1.0') & 
+                (self.summary_df['cpu_model'] == cpu_model)
+            ]['mean_avg_time'].mean()
+            
+            cpu_aces_2 = self.summary_df[
+                (self.summary_df['aces_version'] == 'ACES 2.0') & 
+                (self.summary_df['cpu_model'] == cpu_model)
+            ]['mean_avg_time'].mean()
+            
+            if not pd.isna(cpu_aces_1) and not pd.isna(cpu_aces_2):
+                # Create short CPU name
+                cpu_short = self._create_short_cpu_name(cpu_model)
+                comparison_categories.append(f'{cpu_short}')
+                aces_1_values.append(cpu_aces_1)
+                aces_2_values.append(cpu_aces_2)
+        
+        # Create the comprehensive bar chart
+        fig, ax = plt.subplots(figsize=(16, 10))
+        
+        # Set up bar positions
+        x_pos = range(len(comparison_categories))
+        bar_width = 0.35
+        
+        # Create bars
+        bars1 = ax.bar([x - bar_width/2 for x in x_pos], aces_1_values, 
+                      bar_width, label='ACES 1.0', alpha=0.8, color='#2E86AB')
+        bars2 = ax.bar([x + bar_width/2 for x in x_pos], aces_2_values, 
+                      bar_width, label='ACES 2.0', alpha=0.8, color='#A23B72')
+        
+        # Customize the plot
+        ax.set_title('Comprehensive ACES Version Performance Comparison\n(ACES 1.0 vs ACES 2.0 across all dimensions)', 
+                    fontsize=14, fontweight='bold', pad=20)
+        ax.set_xlabel('Comparison Categories', fontsize=12)
+        ax.set_ylabel('Mean Average Time (ms)', fontsize=12)
+        ax.set_xticks(x_pos)
+        ax.set_xticklabels(comparison_categories, rotation=45, ha='right', fontsize=10)
+        ax.legend(fontsize=12)
+        ax.grid(True, alpha=0.3, axis='y')
+        
+        # Add value labels on bars
+        max_val = max(max(aces_1_values + aces_2_values, default=0), 1)
+        for bar, value in zip(bars1, aces_1_values):
+            if value > 0:
+                ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max_val*0.01,
+                       f'{value:.0f}', ha='center', va='bottom', fontsize=9, fontweight='bold')
+        
+        for bar, value in zip(bars2, aces_2_values):
+            if value > 0:
+                ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max_val*0.01,
+                       f'{value:.0f}', ha='center', va='bottom', fontsize=9, fontweight='bold')
+        
+        # Add percentage difference annotations above each pair
+        for i, (val1, val2) in enumerate(zip(aces_1_values, aces_2_values)):
+            if val1 > 0 and val2 > 0:
+                diff_pct = ((val2 - val1) / val1) * 100
+                color = 'green' if diff_pct < 0 else 'red'
+                ax.annotate(f'{diff_pct:+.0f}%', 
+                          xy=(i, max(val1, val2) + max_val*0.08),
+                          ha='center', va='bottom', fontsize=10, color=color, 
+                          fontweight='bold', bbox=dict(boxstyle='round,pad=0.3', 
+                                                      facecolor='white', alpha=0.8))
+        
+        # Add overall statistics text box
+        overall_diff = ((overall_aces_2 - overall_aces_1) / overall_aces_1) * 100 if overall_aces_1 > 0 else 0
+        stats_text = f"""Overall Statistics:
+ACES 1.0 Average: {overall_aces_1:.1f} ms
+ACES 2.0 Average: {overall_aces_2:.1f} ms
+Performance Difference: {overall_diff:+.1f}%
+Better Performing: {'ACES 1.0' if overall_aces_1 < overall_aces_2 else 'ACES 2.0'}"""
+        
+        ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=10,
+                verticalalignment='top', bbox=dict(boxstyle='round,pad=0.5', 
+                                                  facecolor='lightgray', alpha=0.8),
+                fontfamily='monospace')
+        
+        plt.tight_layout()
+        plt.savefig(output_dir / 'comprehensive_aces_comparison.png', dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        logger.info("Comprehensive ACES comparison chart saved")
+    
+    def _create_short_cpu_name(self, cpu_model: str) -> str:
+        """
+        Create a short name for CPU model for display purposes.
+        
+        Args:
+            cpu_model: Full CPU model name
+            
+        Returns:
+            Short CPU name
+        """
+        if cpu_model == 'Unknown':
+            return 'Unknown'
+        
+        # Extract key CPU information
+        cpu_short = cpu_model
+        
+        # Remove common prefixes/suffixes
+        cpu_short = cpu_short.replace('Intel(R) ', '')
+        cpu_short = cpu_short.replace('(R) ', '')
+        cpu_short = cpu_short.replace(' CPU', '')
+        cpu_short = cpu_short.replace(' @', '')
+        
+        # Simplify specific model names
+        if 'Core(TM) i9-9900K' in cpu_short:
+            return 'i9-9900K'
+        elif 'Core(TM) i9-9900' in cpu_short:
+            return 'i9-9900'
+        elif 'Xeon(R) CPU E5-2687W v3' in cpu_short:
+            return 'E5-2687W v3'
+        elif 'Xeon(R) CPU E5-2667 v4' in cpu_short:
+            return 'E5-2667 v4'
+        elif 'Xeon(R) W-2295' in cpu_short:
+            return 'W-2295'
+        elif 'Xeon(R) w5-2465X' in cpu_short:
+            return 'w5-2465X'
+        elif 'Xeon(R) w7-2495X' in cpu_short:
+            return 'w7-2495X'
+        else:
+            # General simplification for other models
+            parts = cpu_short.split()
+            if len(parts) >= 2:
+                return f"{parts[0]} {parts[1]}"
+            elif len(parts) >= 1:
+                return parts[0]
+            else:
+                return 'Unknown'
     
     def _create_short_cpu_os_label(self, cpu_model: str, os_release: str) -> str:
         """
@@ -933,41 +1156,11 @@ class OCIOAnalyzer:
         if cpu_model == 'Unknown':
             return f'Unknown-{os_release}'
         
-        # Extract key CPU information
-        cpu_short = cpu_model
-        
-        # Remove common prefixes/suffixes
-        cpu_short = cpu_short.replace('Intel(R) ', '')
-        cpu_short = cpu_short.replace('(R) ', '')
-        cpu_short = cpu_short.replace(' CPU', '')
-        
-        # Simplify specific model names
-        if 'Core(TM) i9-9900K' in cpu_short:
-            cpu_short = 'i9-9900K'
-        elif 'Core(TM) i9-9900' in cpu_short:
-            cpu_short = 'i9-9900'
-        elif 'Xeon(R) CPU E5-2687W v3' in cpu_short:
-            cpu_short = 'E5-2687W-v3'
-        elif 'Xeon(R) CPU E5-2667 v4' in cpu_short:
-            cpu_short = 'E5-2667-v4'
-        elif 'Xeon(R) W-2295' in cpu_short:
-            cpu_short = 'W-2295'
-        elif 'Xeon(R) w5-2465X' in cpu_short:
-            cpu_short = 'w5-2465X'
-        elif 'Xeon(R) w7-2495X' in cpu_short:
-            cpu_short = 'w7-2495X'
-        else:
-            # General simplification for other models
-            parts = cpu_short.split()
-            if len(parts) > 2:
-                cpu_short = f"{parts[0]}-{parts[1]}"
-            elif len(parts) > 1:
-                cpu_short = f"{parts[0]}-{parts[1]}"
-            else:
-                cpu_short = parts[0] if parts else 'Unknown'
+        # Get short CPU name
+        cpu_short = self._create_short_cpu_name(cpu_model)
         
         return f"{cpu_short}-{os_release}"
-
+    
     def create_detailed_ocio_comparison_report(self, output_dir: Path) -> None:
         """
         Create a detailed OCIO version comparison report with ACES version information.
@@ -1087,6 +1280,7 @@ class OCIOAnalyzer:
         self.create_detailed_comparison_report(output_dir)
         self.create_ocio_version_plots(output_dir)
         self.create_detailed_cpu_os_ocio_comparison(output_dir)
+        self.create_comprehensive_aces_comparison(output_dir)
         self.create_detailed_ocio_comparison_report(output_dir)
         
         # Save summary data
