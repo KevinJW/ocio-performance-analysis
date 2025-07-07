@@ -4,7 +4,7 @@
 
 The `scripts/ocio_cli.py` script was failing with a `TypeError` when running any command:
 
-```
+``` text
 TypeError: OCIOTestParser.parse_directory() takes 2 positional arguments but 3 were given
 ```
 
@@ -25,12 +25,14 @@ The issue was caused by incorrect method calls in the CLI script after the code 
 ### 1. Fixed Parser Method Call
 
 **Before:**
-```python
+
+``` python
 parser.parse_directory(test_dir, output_file)
 ```
 
 **After:**
-```python
+
+``` python
 results = parser.parse_directory(test_dir)
 parser.save_to_csv(results, output_file)
 ```
@@ -40,12 +42,14 @@ The `parse_directory` method returns a list of results, which must then be saved
 ### 2. Fixed Analyzer Constructor
 
 **Before:**
-```python
+
+``` python
 analyzer = OCIOAnalyzer()
 ```
 
 **After:**
-```python
+
+``` python
 analyzer = OCIOAnalyzer(csv_file)
 ```
 
@@ -54,14 +58,16 @@ The `OCIOAnalyzer` constructor requires the CSV file path as a parameter.
 ### 3. Fixed Method Names
 
 **Before:**
-```python
+
+``` python
 analyzer.analyze_from_csv(csv_file, output_dir)
 viewer = OCIOChartViewer()
 viewer.view_charts(output_dir)
 ```
 
 **After:**
-```python
+
+``` python
 analyzer.run_full_analysis(output_dir)
 viewer = OCIOChartViewer(output_dir)
 viewer.view_all_charts()

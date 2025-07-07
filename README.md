@@ -19,25 +19,25 @@ results with comprehensive visualization and reporting capabilities.
 
 ### Using pip (recommended)
 
-```bash
+``` bash
 pip install -e .
 ```
 
 ### Development installation
 
-```bash
+``` bash
 pip install -e ".[dev]"
 ```
 
 ### Manual installation
 
-```bash
+``` bash
 pip install -r requirements.txt
 ```
 
 ## Project Structure
 
-```text
+``` text
 ocio-performance-analysis/
 ├── src/                          # Python package source code
 │   └── ocio_performance_analysis/
@@ -60,7 +60,7 @@ ocio-performance-analysis/
 
 ### Quick Start (All-in-One)
 
-```bash
+``` bash
 # Run complete analysis pipeline
 python scripts/ocio_cli.py all
 
@@ -72,7 +72,7 @@ python scripts/ocio_cli.py view
 
 ### Individual Scripts
 
-```bash
+``` bash
 # Parse test files
 python scripts/parse_ocio_results.py
 
@@ -85,7 +85,7 @@ python scripts/view_charts.py
 
 ### Programmatic Usage
 
-```python
+``` python
 from ocio_performance_analysis import OCIOTestParser, OCIOAnalyzer, OCIOChartViewer
 
 # Parse test files
@@ -99,7 +99,6 @@ analyzer.analyze_from_csv("data/ocio_test_results.csv", "analysis_results")
 # View charts
 viewer = OCIOChartViewer()
 viewer.view_charts("analysis_results")
-```
 
 # Parse all files in a directory
 results = parser.parse_directory(Path("OCIO_tests"))
@@ -128,13 +127,13 @@ Each test result contains the following fields:
 
 Run the test suite:
 
-```bash
+``` bash
 pytest
 ```
 
 Run tests with coverage:
 
-```bash
+``` bash
 pytest --cov=ocio_parser
 ```
 
@@ -142,7 +141,7 @@ pytest --cov=ocio_parser
 
 The parser expects OCIO test result files with the following format:
 
-```text
+``` text
 OCIO Version: 2.4.1
 
 OCIO Config. file:    './config.ocio'
@@ -152,9 +151,8 @@ OCIO search_path:
 Processing statistics:
 
 Processing from 'ACES2065-1' to '(sRGB - Display, ACES 1.0 - SDR Video)'
-Create the config identifier:		For 10 iterations, it took: [11.1952, 0.000477791, 1.11995] ms
-Create the context identifier:		For 10 iterations, it took: [0.001487, 0.000249889, 0.0003736] ms
-...
+Create the config identifier:       For 10 iterations, it took: [11.1952, 0.000477791, 1.11995] ms
+Create the context identifier:      For 10 iterations, it took: [0.001487, 0.000249889, 0.0003736] ms
 ```
 
 ## Error Handling
@@ -178,7 +176,7 @@ The parser includes robust error handling for:
 
 Use the comprehensive chart viewer to display all generated analysis plots:
 
-```bash
+``` bash
 # View all charts
 python view_plots.py
 
