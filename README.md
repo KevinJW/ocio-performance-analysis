@@ -122,3 +122,28 @@ The parser includes robust error handling for:
 ## License
 
 This project is provided as-is for parsing OCIO test results.
+
+## Viewing Analysis Results
+
+### Unified Chart Viewer
+
+Use the comprehensive chart viewer to display all generated analysis plots:
+
+```bash
+# View all charts
+python view_plots.py
+
+# View specific chart (partial matching supported)
+python view_plots.py comprehensive    # ACES comparison chart
+python view_plots.py merged           # OCIO 2.4.1 vs 2.4.2 comparison
+python view_plots.py summary          # Summary analysis overview
+python view_plots.py version          # OCIO version comparison
+
+# List available charts
+python view_plots.py --list
+
+# Show help
+python view_plots.py --help
+```
+
+The viewer provides detailed descriptions for each chart type and automatically handles chart sizing and display.
