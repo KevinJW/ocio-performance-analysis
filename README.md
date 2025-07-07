@@ -46,10 +46,10 @@ ocio-performance-analysis/
 │       ├── analyzer.py           # Performance analysis
 │       └── viewer.py             # Chart visualization
 ├── scripts/                      # Command-line utilities
-│   ├── ocio_cli.py              # Main CLI interface
-│   ├── parse_ocio_results.py    # Parse test files
-│   ├── run_analysis.py          # Run analysis
-│   └── view_charts.py           # View charts
+│   ├── ocio_cli.py               # Main CLI interface
+│   ├── parse_ocio_results.py     # Parse test files
+│   ├── run_analysis.py           # Run analysis
+│   └── view_charts.py            # View charts
 ├── tests/                        # Unit tests
 ├── docs/                         # Documentation
 ├── data/                         # Test data and results

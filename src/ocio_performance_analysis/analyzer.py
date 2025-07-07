@@ -1707,6 +1707,7 @@ Better Performing: {"ACES 1.0" if overall_aces_1 < overall_aces_2 else "ACES 2.0
                     self.all_ocio_comparison_data["aces_version"] == aces_version
                 ].sort_values("ocio_version")
 
+                # For detailed listings, sort by version order
                 for _, row in aces_data.iterrows():
                     f.write(f"\n  OCIO Version: {row['ocio_version']}\n")
                     f.write(f"  {'-' * (len(row['ocio_version']) + 17)}\n")
@@ -1735,8 +1736,10 @@ Better Performing: {"ACES 1.0" if overall_aces_1 < overall_aces_2 else "ACES 2.0
                     f.write(f"\n  OCIO Version Comparison within {aces_version}:\n")
                     f.write(f"  {'-' * (35 + len(aces_version))}\n")
 
-                    fastest_aces = aces_data.iloc[0]
-                    slowest_aces = aces_data.iloc[-1]
+                    # Sort by performance for fastest/slowest comparison
+                    aces_data_by_perf = aces_data.sort_values("mean_avg_time")
+                    fastest_aces = aces_data_by_perf.iloc[0]
+                    slowest_aces = aces_data_by_perf.iloc[-1]
 
                     if fastest_aces["mean_avg_time"] != 0:
                         aces_perf_diff = (

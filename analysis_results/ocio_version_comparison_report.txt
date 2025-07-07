@@ -60,9 +60,9 @@ ACES 1.0:
 
   OCIO Version Comparison within ACES 1.0:
   -------------------------------------------
-    Fastest: 2.4.0 (324.2 ms)
-    Slowest: 2.4.2 (275.5 ms)
-    Performance difference: -15.0%
+    Fastest: 2.4.2 (275.5 ms)
+    Slowest: 2.4.0 (324.2 ms)
+    Performance difference: 17.7%
 
 ------------------------------------------------------------
 
@@ -95,8 +95,8 @@ ACES 2.0:
 
   OCIO Version Comparison within ACES 2.0:
   -------------------------------------------
-    Fastest: 2.4.1 (2172.6 ms)
-    Slowest: 2.4.2 (1837.4 ms)
-    Performance difference: -15.4%
+    Fastest: 2.4.2 (1837.4 ms)
+    Slowest: 2.4.1 (2172.6 ms)
+    Performance difference: 18.2%
 
 ------------------------------------------------------------
