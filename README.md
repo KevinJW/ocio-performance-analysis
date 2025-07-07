@@ -1,7 +1,7 @@
-# OCIO Test Results Parser
+# OCIO Performance Analysis
 
-A Python tool to parse OCIO (OpenColorIO) test result files and convert them
-to CSV format for analysis.
+A Python toolkit for parsing and analyzing OCIO (OpenColorIO) performance test
+results with comprehensive visualization and reporting capabilities.
 
 ## Features
 
@@ -9,45 +9,97 @@ to CSV format for analysis.
 - Extract timing statistics for different operations
 - Support for multiple test runs within each file
 - Export results to CSV format with comprehensive data
+- Comprehensive performance analysis with statistical insights
+- Interactive chart viewing with detailed explanations
 - Type-safe implementation with full type annotations
 - Comprehensive unit tests with pytest
 - Proper error handling and logging
 
 ## Installation
 
-1. Install dependencies:
+### Using pip (recommended)
+
+```bash
+pip install -e .
+```
+
+### Development installation
+
+```bash
+pip install -e ".[dev]"
+```
+
+### Manual installation
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+## Project Structure
 
-### Basic Usage
-
-Run the parser on the OCIO_tests directory:
-
-```bash
-python ocio_parser.py
+```text
+ocio-performance-analysis/
+├── src/                          # Python package source code
+│   └── ocio_performance_analysis/
+│       ├── __init__.py
+│       ├── parser.py             # OCIO test file parsing
+│       ├── analyzer.py           # Performance analysis
+│       └── viewer.py             # Chart visualization
+├── scripts/                      # Command-line utilities
+│   ├── ocio_cli.py              # Main CLI interface
+│   ├── parse_ocio_results.py    # Parse test files
+│   ├── run_analysis.py          # Run analysis
+│   └── view_charts.py           # View charts
+├── tests/                        # Unit tests
+├── docs/                         # Documentation
+├── data/                         # Test data and results
+└── analysis_results/             # Generated plots and reports
 ```
 
-This will:
+## Usage
 
-1. Parse all `.txt` files in the `OCIO_tests` directory
-2. Extract test results including timing statistics
-3. Save results to `ocio_test_results.csv`
+### Quick Start (All-in-One)
+
+```bash
+# Run complete analysis pipeline
+python scripts/ocio_cli.py all
+
+# Run individual steps
+python scripts/ocio_cli.py parse
+python scripts/ocio_cli.py analyze
+python scripts/ocio_cli.py view
+```
+
+### Individual Scripts
+
+```bash
+# Parse test files
+python scripts/parse_ocio_results.py
+
+# Run analysis
+python scripts/run_analysis.py
+
+# View charts
+python scripts/view_charts.py
+```
 
 ### Programmatic Usage
 
 ```python
-from pathlib import Path
-from ocio_parser import OCIOTestParser
+from ocio_performance_analysis import OCIOTestParser, OCIOAnalyzer, OCIOChartViewer
 
-# Create parser instance
+# Parse test files
 parser = OCIOTestParser()
+results = parser.parse_file("data/OCIO_tests/test_file.txt")
 
-# Parse a single file
-results = parser.parse_file(Path("OCIO_tests/test_file.txt"))
+# Run analysis
+analyzer = OCIOAnalyzer()
+analyzer.analyze_from_csv("data/ocio_test_results.csv", "analysis_results")
+
+# View charts
+viewer = OCIOChartViewer()
+viewer.view_charts("analysis_results")
+```
 
 # Parse all files in a directory
 results = parser.parse_directory(Path("OCIO_tests"))
