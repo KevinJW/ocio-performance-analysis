@@ -65,12 +65,12 @@ Examples:
             print(f"❌ Test directory not found: {test_dir}")
             sys.exit(1)
 
-        parser.parse_directory(test_dir, output_file)
+        results = parser.parse_directory(test_dir)
+        parser.save_to_csv(results, output_file)
         print(f"✅ Results saved to: {output_file}")
 
     if args.command in ['analyze', 'all']:
         print("📊 Running performance analysis...")
-        analyzer = OCIOAnalyzer()
         csv_file = data_dir / "ocio_test_results.csv"
 
         if not csv_file.exists():
@@ -78,13 +78,14 @@ Examples:
             print("Run parsing first: python -m scripts.ocio_cli parse")
             sys.exit(1)
 
-        analyzer.analyze_from_csv(csv_file, output_dir)
+        analyzer = OCIOAnalyzer(csv_file)
+        analyzer.run_full_analysis(output_dir)
         print(f"✅ Analysis complete. Results in: {output_dir}")
 
     if args.command in ['view', 'all']:
         print("📈 Launching chart viewer...")
-        viewer = OCIOChartViewer()
-        viewer.view_charts(output_dir)
+        viewer = OCIOChartViewer(output_dir)
+        viewer.view_all_charts()
 
 
 if __name__ == "__main__":
