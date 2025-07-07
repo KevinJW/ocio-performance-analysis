@@ -2,19 +2,24 @@
 
 ## What Was Consolidated
 
-Previously, there were three separate viewing scripts with duplicated functionality:
+Previously, there were three separate viewing scripts with duplicated
+functionality:
 
 1. **`view_plots.py`** - Basic chart viewer for all PNG files
-2. **`view_comprehensive_aces_chart.py`** - Specialized viewer for ACES comparison
-3. **`view_merged_ocio_chart.py`** - Specialized viewer for merged OCIO comparison
+2. **`view_comprehensive_aces_chart.py`** - Specialized viewer for ACES
+   comparison
+3. **`view_merged_ocio_chart.py`** - Specialized viewer for merged OCIO
+   comparison
 
 ## New Unified Solution
 
-All functionality has been merged into a single comprehensive script: **`view_plots.py`**
+All functionality has been merged into a single comprehensive script:
+**`view_plots.py`**
 
 ### Key Features
 
-#### 🎯 **Command-Line Interface**
+#### Command-Line Interface
+
 ```bash
 python view_plots.py                    # View all charts
 python view_plots.py <chart_name>       # View specific chart
@@ -22,20 +27,24 @@ python view_plots.py --list             # List available charts
 python view_plots.py --help             # Show help
 ```
 
-#### 📊 **Chart-Specific Descriptions**
+#### Chart-Specific Descriptions
+
 Each chart type now has detailed descriptions explaining:
+
 - What the chart shows
 - Key features and insights
 - How to interpret the data
 - Color coding and annotations
 
-#### 🔍 **Smart Chart Discovery**
+#### Smart Chart Discovery
+
 - Partial name matching for easy selection
 - Automatic chart availability checking
 - Descriptive error messages
 - Proper chart sizing for each type
 
-#### 🎨 **Enhanced User Experience**
+#### Enhanced User Experience
+
 - Consistent formatting and emoji indicators
 - Detailed explanations before displaying charts
 - Proper error handling and graceful failures
@@ -61,11 +70,11 @@ Each chart type now has detailed descriptions explaining:
 
 ## Benefits of Consolidation
 
-✅ **Eliminated Code Duplication** - Single source of truth for chart viewing
-✅ **Improved Maintainability** - One script to update instead of three
-✅ **Enhanced Functionality** - Command-line interface with rich options
-✅ **Better User Experience** - Consistent interface and detailed guidance
-✅ **Simplified Workflow** - Single command for all chart viewing needs
+- **Eliminated Code Duplication** - Single source of truth for chart viewing
+- **Improved Maintainability** - One script to update instead of three
+- **Enhanced Functionality** - Command-line interface with rich options
+- **Better User Experience** - Consistent interface and detailed guidance
+- **Simplified Workflow** - Single command for all chart viewing needs
 
 ## Usage Examples
 
@@ -85,4 +94,6 @@ python view_plots.py --help
 python view_plots.py --list
 ```
 
-The consolidated viewer maintains all the specialized functionality of the original scripts while providing a unified, enhanced experience for viewing OCIO performance analysis results.
+The consolidated viewer maintains all the specialized functionality of the
+original scripts while providing a unified, enhanced experience for viewing
+OCIO performance analysis results.

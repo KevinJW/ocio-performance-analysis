@@ -1,6 +1,7 @@
 # OCIO Test Results Parser
 
-A Python tool to parse OCIO (OpenColorIO) test result files and convert them to CSV format for analysis.
+A Python tool to parse OCIO (OpenColorIO) test result files and convert them
+to CSV format for analysis.
 
 ## Features
 
@@ -89,7 +90,7 @@ pytest --cov=ocio_parser
 
 The parser expects OCIO test result files with the following format:
 
-```
+```text
 OCIO Version: 2.4.1
 
 OCIO Config. file:    './config.ocio'
@@ -119,10 +120,6 @@ The parser includes robust error handling for:
 - `pytest`: For testing framework
 - `typing-extensions`: For enhanced type annotations
 
-## License
-
-This project is provided as-is for parsing OCIO test results.
-
 ## Viewing Analysis Results
 
 ### Unified Chart Viewer
@@ -146,4 +143,9 @@ python view_plots.py --list
 python view_plots.py --help
 ```
 
-The viewer provides detailed descriptions for each chart type and automatically handles chart sizing and display.
+The viewer provides detailed descriptions for each chart type and automatically
+handles chart sizing and display.
+
+## License
+
+This project is provided as-is for parsing OCIO test results.

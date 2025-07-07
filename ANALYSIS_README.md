@@ -1,21 +1,25 @@
 # OCIO Test Results Analysis
 
-This directory contains analysis scripts and results for comparing OCIO (OpenColorIO) test performance across different operating system releases.
+This directory contains analysis scripts and results for comparing OCIO
+(OpenColorIO) test performance across different operating system releases.
 
-## 📊 Analysis Overview
+## Analysis Overview
 
-The analysis script (`ocio_analysis.py`) processes the OCIO test results CSV file to:
+The analysis script (`ocio_analysis.py`) processes the OCIO test results CSV
+file to:
 
-1. **Summarize test runs** by filename using mean averages for numerical columns
+1. **Summarize test runs** by filename using mean averages for numerical
+   columns
 2. **Identify CPU models** that were tested on multiple OS releases (r7 and r9)
 3. **Generate visualizations** comparing OS performance effects
 4. **Create detailed reports** with performance comparisons
 
-## 🔍 Key Findings
+## Key Findings
 
 ### Performance Improvements with r9 OS Release
 
-Our analysis of 3 CPU models tested on both r7 and r9 OS releases shows **consistent and significant performance improvements** with r9:
+Our analysis of 3 CPU models tested on both r7 and r9 OS releases shows
+**consistent and significant performance improvements** with r9:
 
 | CPU Model | r7 Performance | r9 Performance | Improvement |
 |-----------|----------------|----------------|-------------|
@@ -24,13 +28,15 @@ Our analysis of 3 CPU models tested on both r7 and r9 OS releases shows **consis
 | Intel(R) Xeon(R) W-2295 CPU @ 3.00GHz | 1281.3 ms | 530.1 ms | **58.6%** |
 
 ### Overall Summary
+
 - **Average r7 performance**: 1436.5 ms
-- **Average r9 performance**: 619.0 ms  
+- **Average r9 performance**: 619.0 ms
 - **Overall improvement**: **56.9%**
 
 ### OCIO Version Comparison (2.4.0 vs 2.4.1 vs 2.4.2)
 
-The analysis reveals significant performance improvements from OCIO 2.4.1 to 2.4.2:
+The analysis reveals significant performance improvements from OCIO 2.4.1 to
+2.4.2:
 
 | OCIO Version | Average Performance | Files Tested | Total Operations |
 |--------------|-------------------|---------------|------------------|
@@ -40,38 +46,48 @@ The analysis reveals significant performance improvements from OCIO 2.4.1 to 2.4
 
 **Key OCIO Version Findings:**
 
-**📊 OCIO 2.4.1 vs 2.4.2 Direct Comparison:**
+**OCIO 2.4.1 vs 2.4.2 Direct Comparison:**
+
 - **Performance Improvement**: 15.3% average improvement with 2.4.2
 - **Consistency**: OCIO 2.4.2 is faster in 11/11 tested CPU+OS combinations
 - **Range**: Improvements range from 9.9% to 26.5% depending on configuration
 
-**🚀 Significant Performance Gains:**
+**Significant Performance Gains:**
+
 - **Best improvement**: 26.5% (Xeon w7-2495X on r9)
 - **Typical improvement**: 10-20% across most configurations
-- **OS Release Impact**: r9 OS shows larger improvements (17-27%) compared to r7 OS (10-15%)
+- **OS Release Impact**: r9 OS shows larger improvements (17-27%) compared to
+  r7 OS (10-15%)
 
-**📈 Version Progression:**
+**Version Progression:**
+
 - **2.4.0 → 2.4.1**: Minor improvement (4.3%)
 - **2.4.1 → 2.4.2**: Major improvement (15.3%)
 - **Overall**: 2.4.2 represents a significant performance milestone
 
 ### Direct CPU+OS OCIO Comparison
 
-For the same CPU and OS combination (Intel(R) Xeon(R) CPU E5-2667 v4 @ 3.20GHz on r7):
+For the same CPU and OS combination (Intel(R) Xeon(R) CPU E5-2667 v4 @
+3.20GHz on r7):
+
 - **OCIO 2.4.0**: 1164.5 ms
 - **OCIO 2.4.1**: 1369.2 ms
-- **Note**: This specific case shows 2.4.0 performing better, highlighting the variability in OCIO version performance
+- **Note**: This specific case shows 2.4.0 performing better, highlighting the
+  variability in OCIO version performance
 
-## 📁 Generated Files
+## Generated Files
 
 ### Analysis Results (`analysis_results/` directory)
 
 1. **`summary_analysis.png`** - Overall performance summary visualizations
 2. **`os_comparison_*.png`** - Individual CPU model OS comparisons (3 files)
-3. **`ocio_version_comparison.png`** - OCIO version performance comparison charts
-4. **`ocio_241_vs_242_cpu_os_comparison.png`** - **NEW**: Detailed CPU+OS comparison for OCIO 2.4.1 vs 2.4.2
+3. **`ocio_version_comparison.png`** - OCIO version performance comparison
+   charts
+4. **`ocio_241_vs_242_cpu_os_comparison.png`** - **NEW**: Detailed CPU+OS
+   comparison for OCIO 2.4.1 vs 2.4.2
 5. **`os_comparison_report.txt`** - Detailed text report with OS findings
-6. **`ocio_version_comparison_report.txt`** - Detailed OCIO version comparison report
+6. **`ocio_version_comparison_report.txt`** - Detailed OCIO version comparison
+   report
 7. **`file_summaries.csv`** - Summarized data grouped by filename
 8. **`os_comparisons.csv`** - CPU-OS combination comparison data
 9. **`ocio_version_comparisons.csv`** - OCIO version comparison data
@@ -82,32 +98,37 @@ For the same CPU and OS combination (Intel(R) Xeon(R) CPU E5-2667 v4 @ 3.20GHz o
 1. **`ocio_analysis.py`** - Main analysis script
 2. **`show_findings.py`** - Quick summary of key findings
 3. **`view_plots.py`** - Script to view generated visualizations
-4. **`analyze_ocio_versions.py`** - **NEW**: Detailed OCIO 2.4.1 vs 2.4.2 analysis
+4. **`analyze_ocio_versions.py`** - **NEW**: Detailed OCIO 2.4.1 vs 2.4.2
+   analysis
 
-## 🚀 Usage
+## Usage
 
 ### Run Full Analysis
+
 ```bash
 python ocio_analysis.py
 ```
 
 ### View Quick Summary
+
 ```bash
 python show_findings.py
 ```
 
 ### View Generated Plots
+
 ```bash
 python view_plots.py
 ```
 
-## 📈 Technical Details
+## Technical Details
 
 ### Analysis Methodology
 
-1. **Data Grouping**: Test results are grouped by filename to calculate mean averages for:
+1. **Data Grouping**: Test results are grouped by filename to calculate mean
+   averages for:
    - Minimum execution time
-   - Maximum execution time  
+   - Maximum execution time
    - Average execution time
    - Standard deviation
    - Median execution time
@@ -129,24 +150,39 @@ python view_plots.py
 - **Total test operations**: 1,236
 - **OS releases compared**: r7 vs r9
 
-## 🎯 Conclusions
+## Conclusions
 
-The analysis reveals **significant and consistent performance improvements** when upgrading from r7 to r9 OS release, while OCIO version differences are minimal:
+The analysis reveals **significant and consistent performance improvements**
+when upgrading from r7 to r9 OS release, while OCIO version differences are
+minimal:
 
 ### OS Release Impact (Major)
-1. **Universal Improvement**: All 3 CPU models showed substantial performance gains with r9
+
+1. **Universal Improvement**: All 3 CPU models showed substantial performance
+   gains with r9
 2. **Consistent Range**: Performance improvements range from 54% to 59%
-3. **OS-Level Optimizations**: The consistency across different CPU architectures suggests fundamental OS-level optimizations in r9
-4. **Practical Impact**: Average performance nearly doubles (56.9% improvement), representing a major performance upgrade
+3. **OS-Level Optimizations**: The consistency across different CPU
+   architectures suggests fundamental OS-level optimizations in r9
+4. **Practical Impact**: Average performance nearly doubles (56.9%
+   improvement), representing a major performance upgrade
 
 ### OCIO Version Impact (Minor)
-1. **Minimal Differences**: Only 4.3% performance difference between OCIO 2.4.0 and 2.4.1
-2. **Variable Results**: Some cases show 2.4.0 performing better, others show 2.4.1 performing better
-3. **Negligible Impact**: OCIO version choice has minimal impact compared to OS-level optimizations
+
+1. **Minimal Differences**: Only 4.3% performance difference between OCIO 2.4.0
+   and 2.4.1
+2. **Variable Results**: Some cases show 2.4.0 performing better, others show
+   2.4.1 performing better
+3. **Negligible Impact**: OCIO version choice has minimal impact compared to
+   OS-level optimizations
 
 ### Recommendations
-1. **Priority 1**: Upgrade to r9 OS release for substantial performance benefits
-2. **Priority 2**: Use latest OCIO version (2.4.1) for minor improvements and latest features
-3. **Focus**: System-level optimizations provide far greater performance gains than application-level updates
 
-This suggests that upgrading to r9 OS release would provide substantial performance benefits for OCIO-based color processing workflows, while OCIO version selection is less critical for performance.
+1. **Priority 1**: Upgrade to r9 OS release for substantial performance benefits
+2. **Priority 2**: Use latest OCIO version (2.4.1) for minor improvements and
+   latest features
+3. **Focus**: System-level optimizations provide far greater performance gains
+   than application-level updates
+
+This suggests that upgrading to r9 OS release would provide substantial
+performance benefits for OCIO-based color processing workflows, while OCIO
+version selection is less critical for performance.
