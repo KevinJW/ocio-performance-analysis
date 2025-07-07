@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class TestResult:
+class OCIOTestResult:
     """Data class representing a single test result measurement."""
 
     file_name: str
@@ -63,10 +63,10 @@ class OCIOTestParser:
     def _extract_os_release(self, file_name: str) -> str:
         """
         Extract OS release (r7, r9, etc.) from file name.
-        
+
         Args:
             file_name: Name of the file
-            
+
         Returns:
             OS release string (e.g., 'r7', 'r9') or 'Unknown' if not found
         """
@@ -78,10 +78,10 @@ class OCIOTestParser:
     def _extract_cpu_model(self, content: str) -> str:
         """
         Extract CPU model name from file content.
-        
+
         Args:
             content: Content of the file
-            
+
         Returns:
             CPU model name or 'Unknown' if not found
         """
@@ -90,15 +90,15 @@ class OCIOTestParser:
             return match.group(1).strip()
         return "Unknown"
 
-    def parse_file(self, file_path: Path) -> List[TestResult]:
+    def parse_file(self, file_path: Path) -> List[OCIOTestResult]:
         """
         Parse a single OCIO test result file.
-        
+
         Args:
             file_path: Path to the test result file
-            
+
         Returns:
-            List of TestResult objects
+            List of OCIOTestResult objects
         """
         results = []
 
@@ -133,17 +133,17 @@ class OCIOTestParser:
 
         return results
 
-    def _parse_test_run(self, content: str, file_name: str, cpu_model: str) -> List[TestResult]:
+    def _parse_test_run(self, content: str, file_name: str, cpu_model: str) -> List[OCIOTestResult]:
         """
         Parse a single test run within a file.
-        
+
         Args:
             content: Content of the test run
             file_name: Name of the file being parsed
             cpu_model: CPU model name extracted from the file
-            
+
         Returns:
-            List of TestResult objects for this test run
+            List of OCIOTestResult objects for this test run
         """
         results = []
 
@@ -173,7 +173,7 @@ class OCIOTestParser:
                     logger.warning(f"Could not parse timing value: {value_str}")
 
             if timing_values:
-                result = TestResult(
+                result = OCIOTestResult(
                     file_name=file_name,
                     os_release=self._extract_os_release(file_name),
                     cpu_model=cpu_model,
@@ -192,15 +192,15 @@ class OCIOTestParser:
 
         return results
 
-    def parse_directory(self, directory_path: Path) -> List[TestResult]:
+    def parse_directory(self, directory_path: Path) -> List[OCIOTestResult]:
         """
         Parse all OCIO test result files in a directory.
-        
+
         Args:
             directory_path: Path to the directory containing test files
-            
+
         Returns:
-            List of all TestResult objects from all files
+            List of all OCIOTestResult objects from all files
         """
         all_results = []
 
@@ -217,12 +217,12 @@ class OCIOTestParser:
 
         return all_results
 
-    def save_to_csv(self, results: List[TestResult], output_file: Path) -> None:
+    def save_to_csv(self, results: List[OCIOTestResult], output_file: Path) -> None:
         """
         Save test results to a CSV file.
-        
+
         Args:
-            results: List of TestResult objects
+            results: List of OCIOTestResult objects
             output_file: Path to the output CSV file
         """
         if not results:

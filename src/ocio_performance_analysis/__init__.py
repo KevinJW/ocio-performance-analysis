@@ -11,8 +11,8 @@ __version__ = "1.0.0"
 __author__ = "OCIO Performance Analysis Team"
 
 from .analyzer import OCIOAnalyzer
-from .parser import OCIOTestParser
+from .parser import OCIOTestParser, OCIOTestResult
 from .viewer import OCIOChartViewer
 
 
-__all__ = ["OCIOTestParser", "OCIOAnalyzer", "OCIOChartViewer"]
+__all__ = ["OCIOTestParser", "OCIOTestResult", "OCIOAnalyzer", "OCIOChartViewer"]

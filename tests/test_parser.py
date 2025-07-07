@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from ocio_performance_analysis.parser import OCIOTestParser, TestResult
+from ocio_performance_analysis.parser import OCIOTestParser, OCIOTestResult
 
 
 class TestOCIOTestParser:
@@ -27,7 +27,7 @@ OCIO Version: 2.4.1
 
 OCIO Config. file:    './Downloads/studio-config-aces-v1-and-v2.ocio'
 OCIO Config. version: 2.4
-OCIO search_path:     
+OCIO search_path:
 
 Processing statistics:
 
@@ -50,7 +50,7 @@ OCIO Version: 2.4.1
 
 OCIO Config. file:    './Downloads/studio-config-aces-v1-and-v2.ocio'
 OCIO Config. version: 2.4
-OCIO search_path:     
+OCIO search_path:
 
 Processing statistics:
 
@@ -62,7 +62,7 @@ OCIO Version: 2.4.2
 
 OCIO Config. file:    './Downloads/studio-config-aces-v1-and-v2.ocio'
 OCIO Config. version: 2.4
-OCIO search_path:     
+OCIO search_path:
 
 Processing statistics:
 
@@ -264,13 +264,13 @@ Create the config identifier:		For 10 iterations, it took: [invalid, 1.23, text]
                 tmp_file_path.unlink()
 
 
-class TestTestResult:
-    """Test suite for TestResult data class."""
+class TestOCIOTestResult:
+    """Test suite for OCIOTestResult data class."""
 
     def test_test_result_creation(self):
-        """Test creating a TestResult instance."""
+        """Test creating a OCIOTestResult instance."""
         timing_values = [1.0, 2.0, 3.0]
-        result = TestResult(
+        result = OCIOTestResult(
             file_name="test.txt",
             os_release="r7",
             cpu_model="Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz",
@@ -292,8 +292,8 @@ class TestTestResult:
         assert result.avg_time == 2.0
 
     def test_empty_timing_values(self):
-        """Test TestResult with empty timing values."""
-        result = TestResult(
+        """Test OCIOTestResult with empty timing values."""
+        result = OCIOTestResult(
             file_name="test.txt",
             os_release="r7",
             cpu_model="Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz",
