@@ -56,6 +56,9 @@ def create_os_comparison_bar_charts():
     # 4. ACES Version Impact Chart
     create_aces_impact_chart(multi_os_data, output_dir)
     
+    # 5. OCIO Version Comparison Chart
+    create_ocio_version_comparison_chart(analyzer.data, output_dir)
+    
     print("\n✅ All OS comparison bar charts created successfully!")
     print(f"📁 Charts saved to: {output_dir}")
 
@@ -434,6 +437,141 @@ def create_aces_impact_chart(data, output_dir):
     plt.close()
     
     print(f"   ✅ Saved: {output_dir / 'aces_version_impact.png'}")
+
+
+def create_ocio_version_comparison_chart(data, output_dir):
+    """Create OCIO version comparison chart (2.4.1 vs 2.4.2)."""
+    
+    print("\n📊 Creating OCIO version comparison chart...")
+    
+    # Calculate improvement by OCIO version
+    ocio_improvements = []
+    
+    for aces_version in ['ACES 1.0', 'ACES 2.0']:
+        aces_data = data[data['aces_version'] == aces_version]
+        
+        # Check if we have data for both OCIO versions
+        ocio_241_data = aces_data[aces_data['ocio_version'] == '2.4.1']
+        ocio_242_data = aces_data[aces_data['ocio_version'] == '2.4.2']
+        
+        if len(ocio_241_data) == 0 or len(ocio_242_data) == 0:
+            continue
+            
+        ocio_241_mean = ocio_241_data['avg_time'].mean()
+        ocio_242_mean = ocio_242_data['avg_time'].mean()
+        improvement = ((ocio_241_mean - ocio_242_mean) / ocio_241_mean) * 100
+        
+        ocio_241_count = len(ocio_241_data)
+        ocio_242_count = len(ocio_242_data)
+        
+        ocio_improvements.append({
+            'ACES Version': aces_version,
+            'Improvement %': improvement,
+            '2.4.1 Mean (ms)': ocio_241_mean,
+            '2.4.2 Mean (ms)': ocio_242_mean,
+            '2.4.1 Count': ocio_241_count,
+            '2.4.2 Count': ocio_242_count
+        })
+    
+    if not ocio_improvements:
+        print("   ⚠️  No data available for both OCIO versions")
+        return
+        
+    improvement_df = pd.DataFrame(ocio_improvements)
+    
+    # Create side-by-side comparison chart
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
+    
+    # Extract data for both OCIO versions
+    aces_versions = improvement_df['ACES Version'].tolist()
+    ocio_241_values = improvement_df['2.4.1 Mean (ms)'].tolist()
+    ocio_242_values = improvement_df['2.4.2 Mean (ms)'].tolist()
+    
+    # Calculate shared Y-axis limits (add 10% padding)
+    all_values = ocio_241_values + ocio_242_values
+    y_min = 0
+    y_max = max(all_values) * 1.15
+    
+    # Left chart: OCIO 2.4.1 Performance
+    bars_241 = ax1.bar(aces_versions, ocio_241_values, 
+                       color=['#9C27B0', '#673AB7'], alpha=0.8, width=0.6)
+    
+    # Add value labels for 2.4.1
+    for bar, val in zip(bars_241, ocio_241_values):
+        ax1.text(bar.get_x() + bar.get_width()/2., bar.get_height() + y_max*0.02,
+                f'{val:.1f} ms', ha='center', va='bottom', 
+                fontsize=12, fontweight='bold')
+    
+    # Add sample counts for 2.4.1
+    ocio_241_counts = improvement_df['2.4.1 Count'].tolist()
+    for i, count in enumerate(ocio_241_counts):
+        ax1.text(i, y_max*0.85, f'n={count}', ha='center', va='center',
+                fontsize=10, style='italic', 
+                bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.7))
+    
+    ax1.set_xlabel('ACES Version', fontsize=12, fontweight='bold')
+    ax1.set_ylabel('Performance (ms)', fontsize=12, fontweight='bold')
+    ax1.set_title('OCIO 2.4.1 Performance\n(Lower is Better)', fontsize=14, fontweight='bold')
+    ax1.set_ylim(y_min, y_max)
+    ax1.grid(axis='y', alpha=0.3)
+    
+    # Right chart: OCIO 2.4.2 Performance  
+    bars_242 = ax2.bar(aces_versions, ocio_242_values,
+                       color=['#00BCD4', '#009688'], alpha=0.8, width=0.6)
+    
+    # Add value labels for 2.4.2
+    for bar, val in zip(bars_242, ocio_242_values):
+        ax2.text(bar.get_x() + bar.get_width()/2., bar.get_height() + y_max*0.02,
+                f'{val:.1f} ms', ha='center', va='bottom', 
+                fontsize=12, fontweight='bold')
+    
+    # Add sample counts for 2.4.2
+    ocio_242_counts = improvement_df['2.4.2 Count'].tolist()
+    for i, count in enumerate(ocio_242_counts):
+        ax2.text(i, y_max*0.85, f'n={count}', ha='center', va='center',
+                fontsize=10, style='italic',
+                bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.7))
+    
+    ax2.set_xlabel('ACES Version', fontsize=12, fontweight='bold')
+    ax2.set_ylabel('Performance (ms)', fontsize=12, fontweight='bold')
+    ax2.set_title('OCIO 2.4.2 Performance\n(Lower is Better)', fontsize=14, fontweight='bold')
+    ax2.set_ylim(y_min, y_max)
+    ax2.grid(axis='y', alpha=0.3)
+    
+    # Add improvement annotations between charts
+    for i, (aces_ver, improvement) in enumerate(zip(aces_versions, improvement_df['Improvement %'])):
+        # Add improvement arrow and text in the middle
+        mid_x = 0.5
+        y_pos = 0.7 - (i * 0.2)  # Stagger vertically
+        
+        fig.text(mid_x, y_pos, f'{aces_ver}\n{improvement:.1f}% faster', 
+                ha='center', va='center', fontsize=12, fontweight='bold',
+                bbox=dict(boxstyle="round,pad=0.5", facecolor='lightgreen' if improvement > 0 else 'lightcoral', alpha=0.8),
+                transform=fig.transFigure)
+        
+        # Add arrow pointing from 2.4.1 to 2.4.2 using matplotlib.patches.FancyArrowPatch
+        from matplotlib.patches import FancyArrowPatch
+        arrow = FancyArrowPatch((0.15, y_pos), (0.85, y_pos),
+                               arrowstyle='->', mutation_scale=20, 
+                               color='darkgreen' if improvement > 0 else 'darkred',
+                               linewidth=2, transform=fig.transFigure)
+        fig.patches.append(arrow)
+    
+    # Overall title
+    plt.suptitle('OCIO Version Performance Comparison: 2.4.1 vs 2.4.2 by ACES Version', 
+                 fontsize=16, fontweight='bold', y=0.95)
+    
+    # Add overall improvement summary
+    overall_improvement = improvement_df['Improvement %'].mean()
+    fig.text(0.5, 0.02, f'Average Performance Improvement: {overall_improvement:.1f}%', 
+             ha='center', va='bottom', fontsize=12, fontweight='bold', style='italic')
+    
+    plt.tight_layout()
+    plt.subplots_adjust(top=0.85, bottom=0.15)
+    plt.savefig(output_dir / 'ocio_version_comparison.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    print(f"   ✅ Saved: {output_dir / 'ocio_version_comparison.png'}")
 
 
 if __name__ == "__main__":

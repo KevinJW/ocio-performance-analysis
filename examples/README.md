@@ -12,6 +12,7 @@ This directory contains professional examples demonstrating comprehensive OCIO p
 - `os_comparison_[CPU].png` - Individual CPU performance comparisons  
 - `os_improvement_summary.png` - Summary of performance improvements
 - `aces_version_impact.png` - ACES version specific impact analysis
+- `ocio_version_comparison.png` - OCIO 2.4.1 vs 2.4.2 performance comparison
 
 **Key Insights**:
 - Shows significant performance improvements from r7 to r9
