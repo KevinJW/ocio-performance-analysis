@@ -6,10 +6,11 @@ using focused, single-responsibility components.
 """
 
 from pathlib import Path
+from typing import Optional
 
 from .chart_generator import OCIOChartGenerator
 from .data_analyzer import OCIODataAnalyzer
-from .exceptions import AnalysisError
+from .exceptions import AnalysisError, ConfigurationError
 from .logging_config import get_logger
 from .report_generator import OCIOReportGenerator
 
@@ -26,17 +27,18 @@ class OCIOPerformanceAnalyzer:
     - OCIOReportGenerator: Text report generation
     """
 
-    def __init__(self, csv_file: Path):
+    def __init__(self, csv_file: Optional[Path] = None):
         """
         Initialize the performance analyzer.
 
         Args:
-            csv_file: Path to the CSV file containing test results
+            csv_file: Path to the CSV file containing test results (optional)
             
         Raises:
             FileNotFoundError: If the CSV file doesn't exist
         """
-        self.data_analyzer = OCIODataAnalyzer(csv_file)
+        self.csv_file = csv_file
+        self.data_analyzer = OCIODataAnalyzer(csv_file) if csv_file else None
         self.chart_generator = OCIOChartGenerator()
         self.report_generator = OCIOReportGenerator()
         
@@ -53,8 +55,12 @@ class OCIOPerformanceAnalyzer:
             
         Raises:
             AnalysisError: If analysis fails
+            ConfigurationError: If no CSV file was provided
         """
         try:
+            if not self.data_analyzer:
+                raise ConfigurationError("No CSV file provided. Initialize with a CSV file to run analysis.")
+                
             logger.info("Starting full OCIO performance analysis")
             
             # Ensure output directory exists
@@ -86,6 +92,21 @@ class OCIOPerformanceAnalyzer:
             
         except Exception as e:
             raise AnalysisError(f"Full analysis failed: {e}")
+
+    def load_csv_file(self, csv_file: Path) -> None:
+        """
+        Load a CSV file for analysis.
+        
+        Args:
+            csv_file: Path to the CSV file containing test results
+            
+        Raises:
+            FileNotFoundError: If the CSV file doesn't exist
+        """
+        self.csv_file = csv_file
+        self.data_analyzer = OCIODataAnalyzer(csv_file)
+        self.data = None
+        self.summary_data = None
 
     def _create_all_charts(self, output_dir: Path, 
                           cpu_os_comparisons, ocio_comparisons, 
