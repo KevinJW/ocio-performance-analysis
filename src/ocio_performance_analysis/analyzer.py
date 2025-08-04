@@ -1337,7 +1337,7 @@ ACES 2.0 + OCIO 2.4.2: {aces_2_avg_242:.1f} ms"""
             transform=ax.transAxes,
             fontsize=10,
             verticalalignment="top",
-            bbox=dict(boxstyle="round,pad=0.5", facecolor="lightgray", alpha=0.8),
+            bbox={"boxstyle": "round,pad=0.5", "facecolor": "lightgray", "alpha": 0.8},
             fontfamily="monospace",
         )
 
@@ -1520,7 +1520,7 @@ ACES 2.0 + OCIO 2.4.2: {aces_2_avg_242:.1f} ms"""
                     fontsize=10,
                     color=color,
                     fontweight="bold",
-                    bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8),
+                    bbox={"boxstyle": "round,pad=0.3", "facecolor": "white", "alpha": 0.8},
                 )
 
         # Add overall statistics text box
@@ -1542,7 +1542,7 @@ Better Performing: {"ACES 1.0" if overall_aces_1 < overall_aces_2 else "ACES 2.0
             transform=ax.transAxes,
             fontsize=10,
             verticalalignment="top",
-            bbox=dict(boxstyle="round,pad=0.5", facecolor="lightgray", alpha=0.8),
+            bbox={"boxstyle": "round,pad=0.5", "facecolor": "lightgray", "alpha": 0.8},
             fontfamily="monospace",
         )
 

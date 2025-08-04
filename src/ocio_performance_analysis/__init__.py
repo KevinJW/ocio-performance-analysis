@@ -11,6 +11,10 @@ __version__ = "1.0.0"
 __author__ = "OCIO Performance Analysis Team"
 
 from .analyzer import OCIOAnalyzer
+from .data_analyzer import OCIODataAnalyzer
+from .chart_generator import OCIOChartGenerator
+from .report_generator import OCIOReportGenerator
+from .performance_analyzer import OCIOPerformanceAnalyzer
 from .exceptions import (
     AnalysisError,
     ChartGenerationError,
@@ -29,6 +33,10 @@ __all__ = [
     "OCIOTestParser", 
     "OCIOTestResult", 
     "OCIOAnalyzer", 
+    "OCIODataAnalyzer",
+    "OCIOChartGenerator", 
+    "OCIOReportGenerator",
+    "OCIOPerformanceAnalyzer",
     "OCIOChartViewer",
     "get_logger",
     "setup_logging",
