@@ -13,7 +13,16 @@ from pathlib import Path
 # Add src to path for module imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from ocio_performance_analysis import OCIOAnalyzer, OCIOChartViewer, OCIOTestParser, get_logger, setup_logging
+from ocio_performance_analysis import (
+    OCIOAnalyzer, 
+    OCIOChartViewer, 
+    OCIOTestParser, 
+    setup_logging, 
+    get_logger,
+    FileNotFoundError as OCIOFileNotFoundError,
+    ParseError,
+    AnalysisError,
+)
 
 
 def main():
@@ -68,35 +77,54 @@ Examples:
 
     if args.command in ['parse', 'all']:
         logger.info("🔄 Parsing OCIO test files...")
-        parser = OCIOTestParser()
-        test_dir = data_dir / "OCIO_tests"
-        output_file = data_dir / "ocio_test_results.csv"
+        try:
+            parser = OCIOTestParser()
+            test_dir = data_dir / "OCIO_tests"
+            output_file = data_dir / "ocio_test_results.csv"
 
-        if not test_dir.exists():
-            logger.error(f"❌ Test directory not found: {test_dir}")
+            results = parser.parse_directory(test_dir)
+            parser.save_to_csv(results, output_file)
+            logger.info(f"✅ Results saved to: {output_file}")
+            
+        except OCIOFileNotFoundError as e:
+            logger.error(f"❌ {e}")
             sys.exit(1)
-
-        results = parser.parse_directory(test_dir)
-        parser.save_to_csv(results, output_file)
-        logger.info(f"✅ Results saved to: {output_file}")
+        except ParseError as e:
+            logger.error(f"❌ Parsing failed: {e}")
+            sys.exit(1)
+        except Exception as e:
+            logger.error(f"❌ Unexpected error during parsing: {e}")
+            sys.exit(1)
 
     if args.command in ['analyze', 'all']:
         logger.info("📊 Running performance analysis...")
-        csv_file = data_dir / "ocio_test_results.csv"
+        try:
+            csv_file = data_dir / "ocio_test_results.csv"
 
-        if not csv_file.exists():
-            logger.error(f"❌ CSV file not found: {csv_file}")
-            logger.info("Run parsing first: python -m scripts.ocio_cli parse")
+            if not csv_file.exists():
+                logger.error(f"❌ CSV file not found: {csv_file}")
+                logger.info("Run parsing first: python -m scripts.ocio_cli parse")
+                sys.exit(1)
+
+            analyzer = OCIOAnalyzer(csv_file)
+            analyzer.run_full_analysis(output_dir)
+            logger.info(f"✅ Analysis complete. Results in: {output_dir}")
+            
+        except AnalysisError as e:
+            logger.error(f"❌ Analysis failed: {e}")
             sys.exit(1)
-
-        analyzer = OCIOAnalyzer(csv_file)
-        analyzer.run_full_analysis(output_dir)
-        logger.info(f"✅ Analysis complete. Results in: {output_dir}")
+        except Exception as e:
+            logger.error(f"❌ Unexpected error during analysis: {e}")
+            sys.exit(1)
 
     if args.command in ['view', 'all']:
         logger.info("📈 Launching chart viewer...")
-        viewer = OCIOChartViewer(output_dir)
-        viewer.view_all_charts()
+        try:
+            viewer = OCIOChartViewer(output_dir)
+            viewer.view_all_charts()
+        except Exception as e:
+            logger.error(f"❌ Error viewing charts: {e}")
+            sys.exit(1)
 
 
 if __name__ == "__main__":

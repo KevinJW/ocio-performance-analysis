@@ -2,20 +2,40 @@
 OCIO Test Results Parser
 
 This module parses OCIO test result files and converts them to CSV format.
-Each test run contains multiple iterations with timing statistics.
+Each test run contains mult            # Split content by test runs (separated by OCIO Version)
+            test_runs = re.split(r'\n\nOCIO Version:', content)
+
+            for i, test_run in enumerate(test_runs):
+                if not test_run.strip():
+                    continue
+
+                # Add back the "OCIO Version:" prefix if it was split
+                if i > 0:
+                    test_run = "OCIO Version:" + test_run
+
+                try:
+                    test_results = self._parse_test_run(test_run, file_path.name, cpu_model)
+                    results.extend(test_results)
+                except Exception as e:
+                    logger.warning(f"Failed to parse test run {i} in {file_path}: {e}")
+                    continue
+
+            return results
+            
+        except Exception as e:
+            raise ParseError(f"Failed to parse content of {file_path}: {e}") with timing statistics.
 """
 
 import csv
-import logging
 import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import List
 
+from .exceptions import DataValidationError, FileNotFoundError, ParseError
+from .logging_config import get_logger
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 @dataclass
@@ -99,10 +119,21 @@ class OCIOTestParser:
 
         Returns:
             List of OCIOTestResult objects
+            
+        Raises:
+            FileNotFoundError: If the file doesn't exist
+            ParseError: If the file cannot be parsed
         """
+        if not file_path.exists():
+            raise FileNotFoundError(f"Test result file not found: {file_path}")
+            
+        if not file_path.is_file():
+            raise ParseError(f"Path is not a file: {file_path}")
+            
         results = []
 
         try:
+            # Try UTF-8 encoding first
             with open(file_path, encoding='utf-8') as file:
                 content = file.read()
         except UnicodeDecodeError:
@@ -110,28 +141,42 @@ class OCIOTestParser:
             try:
                 with open(file_path, encoding='latin-1') as file:
                     content = file.read()
+                logger.warning(f"File {file_path} required latin-1 encoding")
             except Exception as e:
-                logger.error(f"Failed to read file {file_path}: {e}")
-                return results
+                raise ParseError(f"Failed to read file {file_path}: {e}")
+        except Exception as e:
+            raise ParseError(f"Unexpected error reading file {file_path}: {e}")
 
-        # Extract CPU model information from the entire file content
-        cpu_model = self._extract_cpu_model(content)
+        if not content.strip():
+            logger.warning(f"File {file_path} is empty")
+            return results
 
-        # Split content by test runs (separated by OCIO Version)
-        test_runs = re.split(r'\n\nOCIO Version:', content)
+        try:
+            # Extract CPU model information from the entire file content
+            cpu_model = self._extract_cpu_model(content)
 
-        for i, test_run in enumerate(test_runs):
-            if not test_run.strip():
-                continue
+            # Split content by test runs (separated by OCIO Version)
+            test_runs = re.split(r'\n\nOCIO Version:', content)
 
-            # Add back the "OCIO Version:" prefix if it was split
-            if i > 0:
-                test_run = "OCIO Version:" + test_run
+            for i, test_run in enumerate(test_runs):
+                if not test_run.strip():
+                    continue
 
-            test_results = self._parse_test_run(test_run, file_path.name, cpu_model)
-            results.extend(test_results)
+                # Add back the "OCIO Version:" prefix if it was split
+                if i > 0:
+                    test_run = "OCIO Version:" + test_run
 
-        return results
+                try:
+                    test_results = self._parse_test_run(test_run, file_path.name, cpu_model)
+                    results.extend(test_results)
+                except Exception as e:
+                    logger.warning(f"Failed to parse test run {i} in {file_path}: {e}")
+                    continue
+
+            return results
+            
+        except Exception as e:
+            raise ParseError(f"Failed to parse content of {file_path}: {e}")
 
     def _parse_test_run(self, content: str, file_name: str, cpu_model: str) -> List[OCIOTestResult]:
         """
@@ -201,20 +246,46 @@ class OCIOTestParser:
 
         Returns:
             List of all OCIOTestResult objects from all files
+            
+        Raises:
+            FileNotFoundError: If the directory doesn't exist
+            ParseError: If no parseable files are found
         """
+        if not directory_path.exists():
+            raise FileNotFoundError(f"Directory not found: {directory_path}")
+            
+        if not directory_path.is_dir():
+            raise ParseError(f"Path is not a directory: {directory_path}")
+
         all_results = []
+        failed_files = []
 
         # Find all .txt files in the directory
         txt_files = list(directory_path.glob("*.txt"))
 
+        if not txt_files:
+            raise ParseError(f"No .txt files found in directory: {directory_path}")
+
         logger.info(f"Found {len(txt_files)} .txt files to parse")
 
         for file_path in txt_files:
-            logger.info(f"Parsing file: {file_path.name}")
-            file_results = self.parse_file(file_path)
-            all_results.extend(file_results)
-            logger.info(f"Extracted {len(file_results)} test results from {file_path.name}")
+            try:
+                logger.info(f"Parsing file: {file_path.name}")
+                file_results = self.parse_file(file_path)
+                all_results.extend(file_results)
+                logger.info(f"Extracted {len(file_results)} test results from {file_path.name}")
+            except Exception as e:
+                logger.error(f"Failed to parse {file_path.name}: {e}")
+                failed_files.append(file_path.name)
+                continue
 
+        if failed_files:
+            logger.warning(f"Failed to parse {len(failed_files)} files: {failed_files}")
+            
+        if not all_results:
+            raise ParseError(f"No valid test results found in any files in {directory_path}")
+
+        logger.info(f"Successfully parsed {len(all_results)} total test results from {len(txt_files) - len(failed_files)}/{len(txt_files)} files")
         return all_results
 
     def save_to_csv(self, results: List[OCIOTestResult], output_file: Path) -> None:
@@ -224,30 +295,49 @@ class OCIOTestParser:
         Args:
             results: List of OCIOTestResult objects
             output_file: Path to the output CSV file
+            
+        Raises:
+            DataValidationError: If results list is empty or invalid
+            ParseError: If CSV writing fails
         """
         if not results:
-            logger.warning("No results to save")
-            return
+            raise DataValidationError("No results provided to save")
+            
+        # Validate results
+        for i, result in enumerate(results):
+            if not isinstance(result, OCIOTestResult):
+                raise DataValidationError(f"Invalid result type at index {i}: {type(result)}")
 
-        logger.info(f"Saving {len(results)} results to {output_file}")
+        try:
+            # Ensure output directory exists
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            
+            logger.info(f"Saving {len(results)} results to {output_file}")
 
-        fieldnames = [
-            'file_name', 'os_release', 'cpu_model', 'ocio_version', 'config_version', 'source_colorspace',
-            'target_colorspace', 'operation', 'iteration_count', 'min_time',
-            'max_time', 'avg_time', 'timing_values'
-        ]
+            fieldnames = [
+                'file_name', 'os_release', 'cpu_model', 'ocio_version', 'config_version', 'source_colorspace',
+                'target_colorspace', 'operation', 'iteration_count', 'min_time',
+                'max_time', 'avg_time', 'timing_values'
+            ]
 
-        with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
+            with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                writer.writeheader()
 
-            for result in results:
-                row = asdict(result)
-                # Convert timing_values list to string for CSV
-                row['timing_values'] = ','.join(map(str, result.timing_values))
-                writer.writerow(row)
+                for result in results:
+                    try:
+                        row = asdict(result)
+                        # Convert timing_values list to string for CSV
+                        row['timing_values'] = ','.join(map(str, result.timing_values))
+                        writer.writerow(row)
+                    except Exception as e:
+                        logger.warning(f"Failed to write result row: {e}")
+                        continue
 
-        logger.info(f"Successfully saved results to {output_file}")
+            logger.info(f"Successfully saved results to {output_file}")
+            
+        except Exception as e:
+            raise ParseError(f"Failed to save results to CSV: {e}")
 
 
 def main():

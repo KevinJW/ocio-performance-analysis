@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+from ocio_performance_analysis.exceptions import DataValidationError
 from ocio_performance_analysis.parser import OCIOTestParser, OCIOTestResult
 
 
@@ -251,14 +252,13 @@ Create the config identifier:		For 10 iterations, it took: [invalid, 1.23, text]
             tmp_file_path.unlink()
 
     def test_save_empty_results(self, parser):
-        """Test saving empty results list."""
+        """Test saving empty results list raises DataValidationError."""
         with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as tmp_file:
             tmp_file_path = Path(tmp_file.name)
 
         try:
-            parser.save_to_csv([], tmp_file_path)
-            # Should not create a file or should create empty file
-            assert tmp_file_path.exists()
+            with pytest.raises(DataValidationError, match="No results provided to save"):
+                parser.save_to_csv([], tmp_file_path)
         finally:
             if tmp_file_path.exists():
                 tmp_file_path.unlink()
