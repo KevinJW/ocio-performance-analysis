@@ -13,7 +13,7 @@ from pathlib import Path
 # Add src to path for module imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from ocio_performance_analysis import OCIOAnalyzer, OCIOChartViewer, OCIOTestParser
+from ocio_performance_analysis import OCIOAnalyzer, OCIOChartViewer, OCIOTestParser, get_logger, setup_logging
 
 
 def main():
@@ -48,7 +48,18 @@ Examples:
         help='Directory for output files (default: analysis_results)'
     )
 
+    parser.add_argument(
+        '--verbose', '-v',
+        action='store_true',
+        help='Enable verbose logging output'
+    )
+
     args = parser.parse_args()
+
+    # Set up logging
+    log_level = "DEBUG" if args.verbose else "INFO"
+    setup_logging(level=log_level)
+    logger = get_logger(__name__)
 
     # Set up paths
     script_dir = Path(__file__).parent.parent
@@ -56,34 +67,34 @@ Examples:
     output_dir = script_dir / args.output_dir
 
     if args.command in ['parse', 'all']:
-        print("🔄 Parsing OCIO test files...")
+        logger.info("🔄 Parsing OCIO test files...")
         parser = OCIOTestParser()
         test_dir = data_dir / "OCIO_tests"
         output_file = data_dir / "ocio_test_results.csv"
 
         if not test_dir.exists():
-            print(f"❌ Test directory not found: {test_dir}")
+            logger.error(f"❌ Test directory not found: {test_dir}")
             sys.exit(1)
 
         results = parser.parse_directory(test_dir)
         parser.save_to_csv(results, output_file)
-        print(f"✅ Results saved to: {output_file}")
+        logger.info(f"✅ Results saved to: {output_file}")
 
     if args.command in ['analyze', 'all']:
-        print("📊 Running performance analysis...")
+        logger.info("📊 Running performance analysis...")
         csv_file = data_dir / "ocio_test_results.csv"
 
         if not csv_file.exists():
-            print(f"❌ CSV file not found: {csv_file}")
-            print("Run parsing first: python -m scripts.ocio_cli parse")
+            logger.error(f"❌ CSV file not found: {csv_file}")
+            logger.info("Run parsing first: python -m scripts.ocio_cli parse")
             sys.exit(1)
 
         analyzer = OCIOAnalyzer(csv_file)
         analyzer.run_full_analysis(output_dir)
-        print(f"✅ Analysis complete. Results in: {output_dir}")
+        logger.info(f"✅ Analysis complete. Results in: {output_dir}")
 
     if args.command in ['view', 'all']:
-        print("📈 Launching chart viewer...")
+        logger.info("📈 Launching chart viewer...")
         viewer = OCIOChartViewer(output_dir)
         viewer.view_all_charts()
 

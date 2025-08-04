@@ -11,8 +11,16 @@ __version__ = "1.0.0"
 __author__ = "OCIO Performance Analysis Team"
 
 from .analyzer import OCIOAnalyzer
+from .logging_config import get_logger, setup_logging
 from .parser import OCIOTestParser, OCIOTestResult
 from .viewer import OCIOChartViewer
 
 
-__all__ = ["OCIOTestParser", "OCIOTestResult", "OCIOAnalyzer", "OCIOChartViewer"]
+__all__ = [
+    "OCIOTestParser",
+    "OCIOTestResult",
+    "OCIOAnalyzer",
+    "OCIOChartViewer",
+    "get_logger",
+    "setup_logging"
+]

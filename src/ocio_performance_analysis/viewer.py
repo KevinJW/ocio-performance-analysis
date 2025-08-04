@@ -11,6 +11,11 @@ from typing import Any, Dict
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 
+from .logging_config import get_logger
+
+
+logger = get_logger(__name__)
+
 
 class OCIOChartViewer:
     """Unified viewer for all OCIO analysis charts."""
@@ -18,7 +23,7 @@ class OCIOChartViewer:
     def __init__(self, analysis_dir: Path = None):
         """
         Initialize the chart viewer.
-        
+
         Args:
             analysis_dir: Directory containing analysis results.
                          Defaults to "analysis_results" in current directory.
@@ -121,8 +126,8 @@ Key insights:
     def view_all_charts(self) -> None:
         """Display all available charts."""
         if not self.analysis_dir.exists():
-            print("❌ Analysis results directory not found.")
-            print("Please run the analysis first to generate the charts.")
+            logger.error("❌ Analysis results directory not found.")
+            logger.info("Please run the analysis first to generate the charts.")
             return
 
         available_charts = []
@@ -132,15 +137,15 @@ Key insights:
                 available_charts.append((chart_file, chart_info))
 
         if not available_charts:
-            print("❌ No charts found in analysis_results directory.")
-            print("Please run the analysis first to generate the charts.")
+            logger.error("❌ No charts found in analysis_results directory.")
+            logger.info("Please run the analysis first to generate the charts.")
             return
 
-        print(f"📊 Found {len(available_charts)} charts to display:")
-        for i, (chart_file, chart_info) in enumerate(available_charts):
-            print(f"  {i+1}. {chart_info['name']}")
+        logger.info(f"📊 Found {len(available_charts)} charts to display:")
+        for i, (_chart_file, chart_info) in enumerate(available_charts):
+            logger.info(f"  {i+1}. {chart_info['name']}")
 
-        print("\\n" + "=" * 70)
+        logger.info("\\n" + "=" * 70)
 
         # Display each chart
         for chart_file, chart_info in available_charts:
@@ -149,13 +154,13 @@ Key insights:
     def view_specific_chart(self, chart_name: str) -> None:
         """
         Display a specific chart by name.
-        
+
         Args:
             chart_name: Name or partial name of the chart to display
         """
         if not self.analysis_dir.exists():
-            print("❌ Analysis results directory not found.")
-            print("Please run the analysis first to generate the charts.")
+            logger.error("❌ Analysis results directory not found.")
+            logger.info("Please run the analysis first to generate the charts.")
             return
 
         # Find chart by partial name match
@@ -168,15 +173,15 @@ Key insights:
                     matching_charts.append((chart_file, chart_info))
 
         if not matching_charts:
-            print(f"❌ Chart '{chart_name}' not found.")
+            logger.error(f"❌ Chart '{chart_name}' not found.")
             self._list_available_charts()
             return
 
         if len(matching_charts) > 1:
-            print(f"🔍 Multiple charts found matching '{chart_name}':")
-            for i, (chart_file, chart_info) in enumerate(matching_charts):
-                print(f"  {i+1}. {chart_info['name']}")
-            print("Please be more specific.")
+            logger.warning(f"🔍 Multiple charts found matching '{chart_name}':")
+            for i, (_chart_file, chart_info) in enumerate(matching_charts):
+                logger.info(f"  {i+1}. {chart_info['name']}")
+            logger.info("Please be more specific.")
             return
 
         chart_file, chart_info = matching_charts[0]
@@ -185,15 +190,15 @@ Key insights:
     def _display_chart(self, chart_file: str, chart_info: Dict[str, Any]) -> None:
         """
         Display a single chart with description.
-        
+
         Args:
             chart_file: Filename of the chart
             chart_info: Chart information dictionary
         """
         chart_path = self.analysis_dir / chart_file
 
-        print(f"\\n{chart_info['description']}")
-        print("=" * 60)
+        logger.info(f"\\n{chart_info['description']}")
+        logger.info("=" * 60)
 
         try:
             img = mpimg.imread(chart_path)
@@ -204,21 +209,21 @@ Key insights:
             plt.tight_layout()
             plt.show()
         except Exception as e:
-            print(f"❌ Error displaying chart: {e}")
+            logger.error(f"❌ Error displaying chart: {e}")
 
     def _list_available_charts(self) -> None:
         """List all available charts."""
-        print("\\n📋 Available charts:")
+        logger.info("\\n📋 Available charts:")
         for chart_file, chart_info in self.charts.items():
             chart_path = self.analysis_dir / chart_file
             status = "✅" if chart_path.exists() else "❌"
-            print(f"  {status} {chart_info['name']}")
+            logger.info(f"  {status} {chart_info['name']}")
 
     def list_charts(self) -> None:
         """List all charts with their availability status."""
-        print("📊 OCIO Performance Analysis Charts")
-        print("=" * 50)
+        logger.info("📊 OCIO Performance Analysis Charts")
+        logger.info("=" * 50)
         self._list_available_charts()
-        print("\\nTo generate missing charts, run the analysis script")
-        print("To view a specific chart, use view_specific_chart(<chart_name>)")
-        print("To view all charts, use view_all_charts()")
+        logger.info("\\nTo generate missing charts, run the analysis script")
+        logger.info("To view a specific chart, use view_specific_chart(<chart_name>)")
+        logger.info("To view all charts, use view_all_charts()")
