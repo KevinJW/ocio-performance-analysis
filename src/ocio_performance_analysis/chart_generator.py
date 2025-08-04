@@ -314,3 +314,191 @@ class OCIOChartGenerator:
             
         except Exception as e:
             raise ChartGenerationError(f"Failed to create performance heatmap: {e}")
+
+    def create_distribution_plot(self, data: pd.DataFrame, column: str, 
+                               output_path: Path, title: str = None) -> None:
+        """
+        Create a distribution plot with histogram and KDE.
+        
+        Args:
+            data: Performance data
+            column: Column to plot distribution for
+            output_path: Where to save the plot
+            title: Custom title for the plot
+        """
+        try:
+            if column not in data.columns:
+                raise ChartGenerationError(f"Column '{column}' not found in data")
+                
+            plt.figure(figsize=(12, 6))
+            
+            # Create subplot layout
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+            
+            # Histogram with KDE
+            sns.histplot(data=data, x=column, kde=True, ax=ax1)
+            ax1.set_title(f'{title or column} - Distribution')
+            ax1.set_xlabel(f'{column} (ms)')
+            
+            # Box plot
+            sns.boxplot(data=data, y=column, ax=ax2)
+            ax2.set_title(f'{title or column} - Box Plot')
+            ax2.set_ylabel(f'{column} (ms)')
+            
+            plt.tight_layout()
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.close()
+            
+            logger.info(f"Distribution plot saved to {output_path}")
+            
+        except Exception as e:
+            raise ChartGenerationError(f"Failed to create distribution plot: {e}")
+
+    def create_scatter_plot(self, data: pd.DataFrame, x_col: str, y_col: str,
+                          output_path: Path, color_col: str = None, 
+                          title: str = None) -> None:
+        """
+        Create a scatter plot to explore relationships between variables.
+        
+        Args:
+            data: Performance data
+            x_col: Column for x-axis
+            y_col: Column for y-axis
+            output_path: Where to save the plot
+            color_col: Optional column for color coding
+            title: Custom title for the plot
+        """
+        try:
+            required_cols = [x_col, y_col]
+            if color_col:
+                required_cols.append(color_col)
+                
+            missing_cols = [col for col in required_cols if col not in data.columns]
+            if missing_cols:
+                raise ChartGenerationError(f"Missing columns: {missing_cols}")
+                
+            plt.figure(figsize=(10, 8))
+            
+            if color_col:
+                sns.scatterplot(data=data, x=x_col, y=y_col, hue=color_col, alpha=0.7)
+            else:
+                sns.scatterplot(data=data, x=x_col, y=y_col, alpha=0.7)
+                
+            plt.title(title or f'{y_col} vs {x_col}')
+            plt.xlabel(f'{x_col} (ms)')
+            plt.ylabel(f'{y_col} (ms)')
+            
+            # Add correlation coefficient if both columns are numeric
+            if data[x_col].dtype in ['int64', 'float64'] and data[y_col].dtype in ['int64', 'float64']:
+                corr = data[x_col].corr(data[y_col])
+                plt.text(0.05, 0.95, f'r = {corr:.3f}', transform=plt.gca().transAxes,
+                        bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+                
+            plt.tight_layout()
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.close()
+            
+            logger.info(f"Scatter plot saved to {output_path}")
+            
+        except Exception as e:
+            raise ChartGenerationError(f"Failed to create scatter plot: {e}")
+
+    def create_violin_plot(self, data: pd.DataFrame, category_col: str, 
+                          value_col: str, output_path: Path, title: str = None) -> None:
+        """
+        Create a violin plot to show distribution across categories.
+        
+        Args:
+            data: Performance data
+            category_col: Column for categories
+            value_col: Column for values
+            output_path: Where to save the plot
+            title: Custom title for the plot
+        """
+        try:
+            if category_col not in data.columns or value_col not in data.columns:
+                raise ChartGenerationError(f"Required columns not found in data")
+                
+            plt.figure(figsize=(12, 8))
+            
+            sns.violinplot(data=data, x=category_col, y=value_col)
+            plt.title(title or f'{value_col} Distribution by {category_col}')
+            plt.xlabel(category_col.replace('_', ' ').title())
+            plt.ylabel(f'{value_col} (ms)')
+            plt.xticks(rotation=45)
+            
+            plt.tight_layout()
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.close()
+            
+            logger.info(f"Violin plot saved to {output_path}")
+            
+        except Exception as e:
+            raise ChartGenerationError(f"Failed to create violin plot: {e}")
+
+    def create_time_series_plot(self, data: pd.DataFrame, time_col: str, 
+                              value_col: str, output_path: Path, 
+                              group_col: str = None, title: str = None) -> None:
+        """
+        Create a time series plot for temporal analysis.
+        
+        Args:
+            data: Performance data
+            time_col: Column with time/date information
+            value_col: Column with values to plot
+            output_path: Where to save the plot
+            group_col: Optional column for grouping lines
+            title: Custom title for the plot
+        """
+        try:
+            required_cols = [time_col, value_col]
+            if group_col:
+                required_cols.append(group_col)
+                
+            missing_cols = [col for col in required_cols if col not in data.columns]
+            if missing_cols:
+                raise ChartGenerationError(f"Missing columns: {missing_cols}")
+                
+            plt.figure(figsize=(12, 6))
+            
+            if group_col:
+                for group in data[group_col].unique():
+                    group_data = data[data[group_col] == group]
+                    plt.plot(group_data[time_col], group_data[value_col], 
+                           marker='o', label=group, alpha=0.7)
+                plt.legend()
+            else:
+                plt.plot(data[time_col], data[value_col], marker='o', alpha=0.7)
+                
+            plt.title(title or f'{value_col} Over Time')
+            plt.xlabel(time_col.replace('_', ' ').title())
+            plt.ylabel(f'{value_col} (ms)')
+            plt.xticks(rotation=45)
+            
+            plt.tight_layout()
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.close()
+            
+            logger.info(f"Time series plot saved to {output_path}")
+            
+        except Exception as e:
+            raise ChartGenerationError(f"Failed to create time series plot: {e}")
+
+    def get_available_chart_types(self) -> List[str]:
+        """
+        Get a list of available chart types.
+        
+        Returns:
+            List of available chart method names
+        """
+        chart_methods = [
+            'create_summary_plot',
+            'create_comparison_plot', 
+            'create_aces_comparison_plot',
+            'create_performance_heatmap',
+            'create_distribution_plot',
+            'create_scatter_plot',
+            'create_violin_plot',
+            'create_time_series_plot'
+        ]
+        return chart_methods

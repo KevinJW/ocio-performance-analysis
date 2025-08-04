@@ -5,8 +5,9 @@ Handles data processing, comparisons, and statistical analysis
 for OCIO performance test results.
 """
 
+from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
 
@@ -19,10 +20,28 @@ logger = get_logger(__name__)
 class OCIODataAnalyzer:
     """Handles data analysis and comparison operations for OCIO performance data."""
 
-    def __init__(self, csv_file: Path):
+    def __init__(self, csv_file: Optional[Path] = None):
         """
         Initialize the data analyzer.
 
+        Args:
+            csv_file: Path to the CSV file containing test results (optional)
+            
+        Raises:
+            FileNotFoundError: If the CSV file doesn't exist
+        """
+        self.csv_file = csv_file
+        self.data = None
+        self._summary_cache = None
+        
+        # Validate CSV file if provided
+        if csv_file and not csv_file.exists():
+            raise OCIOFileNotFoundError(f"CSV file not found: {csv_file}")
+
+    def set_csv_file(self, csv_file: Path) -> None:
+        """
+        Set the CSV file for analysis.
+        
         Args:
             csv_file: Path to the CSV file containing test results
             
@@ -33,7 +52,9 @@ class OCIODataAnalyzer:
             raise OCIOFileNotFoundError(f"CSV file not found: {csv_file}")
             
         self.csv_file = csv_file
+        # Clear cached data when CSV changes
         self.data = None
+        self._summary_cache = None
 
     def load_data(self) -> pd.DataFrame:
         """
@@ -45,7 +66,17 @@ class OCIODataAnalyzer:
         Raises:
             AnalysisError: If data loading fails
             DataValidationError: If data is invalid
+            ConfigurationError: If no CSV file is set
         """
+        if not self.csv_file:
+            from .exceptions import ConfigurationError
+            raise ConfigurationError("No CSV file set. Use set_csv_file() first.")
+            
+        # Return cached data if available
+        if self.data is not None:
+            logger.debug("Using cached data")
+            return self.data
+            
         try:
             logger.info(f"Loading data from {self.csv_file}")
             self.data = pd.read_csv(self.csv_file)
@@ -55,17 +86,63 @@ class OCIODataAnalyzer:
                 
             logger.info(f"Loaded {len(self.data)} test results")
             
+            # Validate data quality
+            self._validate_data_quality()
+            
             # Add ACES version categorization
             self.data['aces_version'] = self.data['target_colorspace'].apply(
                 self._categorize_aces_version
             )
             
+            logger.info("Data loading and validation completed successfully")
             return self.data
             
         except Exception as e:
             if isinstance(e, (DataValidationError, OCIOFileNotFoundError)):
                 raise
             raise AnalysisError(f"Failed to load data from {self.csv_file}: {e}")
+
+    def _validate_data_quality(self) -> None:
+        """
+        Validate the quality and completeness of loaded data.
+        
+        Raises:
+            DataValidationError: If data quality issues are found
+        """
+        required_columns = ['avg_time', 'min_time', 'max_time', 'file_name', 'cpu_model']
+        missing_columns = [col for col in required_columns if col not in self.data.columns]
+        
+        if missing_columns:
+            raise DataValidationError(f"Missing required columns: {missing_columns}")
+        
+        # Check for negative timing values
+        timing_columns = ['avg_time', 'min_time', 'max_time']
+        for col in timing_columns:
+            if col in self.data.columns:
+                negative_count = (self.data[col] < 0).sum()
+                if negative_count > 0:
+                    logger.warning(f"Found {negative_count} negative values in {col}")
+        
+        # Check for reasonable timing ranges (not too large)
+        max_reasonable_time = 100000  # 100 seconds in ms
+        for col in timing_columns:
+            if col in self.data.columns:
+                large_values = (self.data[col] > max_reasonable_time).sum()
+                if large_values > 0:
+                    logger.warning(f"Found {large_values} unusually large values in {col} (>{max_reasonable_time}ms)")
+        
+        # Check data completeness
+        total_rows = len(self.data)
+        for col in required_columns:
+            null_count = self.data[col].isnull().sum()
+            if null_count > 0:
+                null_pct = (null_count / total_rows) * 100
+                if null_pct > 10:  # More than 10% missing
+                    logger.warning(f"Column '{col}' has {null_pct:.1f}% missing values")
+                else:
+                    logger.debug(f"Column '{col}' has {null_count} missing values ({null_pct:.1f}%)")
+        
+        logger.debug(f"Data quality validation completed for {total_rows} rows")
 
     def _categorize_aces_version(self, target_colorspace: str) -> str:
         """
@@ -101,6 +178,11 @@ class OCIODataAnalyzer:
         if self.data is None:
             raise AnalysisError("Data not loaded. Call load_data() first.")
             
+        # Return cached summary if available
+        if self._summary_cache is not None:
+            logger.debug("Using cached summary data")
+            return self._summary_cache
+            
         try:
             summary = self.data.groupby([
                 'file_name', 'os_release', 'cpu_model', 'ocio_version', 
@@ -117,7 +199,13 @@ class OCIODataAnalyzer:
                 'min_avg_time', 'max_avg_time', 'global_min_time', 'global_max_time'
             ]
 
-            return summary.reset_index()
+            result = summary.reset_index()
+            
+            # Cache the result for future use
+            self._summary_cache = result
+            logger.debug("Summary data cached for future use")
+            
+            return result
             
         except Exception as e:
             raise AnalysisError(f"Failed to create summary: {e}")
@@ -366,3 +454,158 @@ class OCIODataAnalyzer:
             
         except Exception as e:
             raise AnalysisError(f"Failed to generate performance summary: {e}")
+
+    # Statistical utility methods
+    
+    def get_outliers(self, column: str = 'avg_time', threshold: float = 2.0) -> pd.DataFrame:
+        """
+        Identify outliers in performance data using z-score method.
+        
+        Args:
+            column: Column to analyze for outliers
+            threshold: Z-score threshold for outlier detection
+            
+        Returns:
+            DataFrame containing outlier records
+            
+        Raises:
+            AnalysisError: If outlier detection fails
+        """
+        if self.data is None:
+            raise AnalysisError("Data not loaded. Call load_data() first.")
+            
+        try:
+            if column not in self.data.columns:
+                raise AnalysisError(f"Column '{column}' not found in data")
+                
+            # Calculate z-scores
+            mean_val = self.data[column].mean()
+            std_val = self.data[column].std()
+            
+            if std_val == 0:
+                logger.warning(f"Standard deviation is zero for column '{column}', no outliers detected")
+                return pd.DataFrame()
+                
+            z_scores = abs((self.data[column] - mean_val) / std_val)
+            outlier_mask = z_scores > threshold
+            
+            outliers = self.data[outlier_mask].copy()
+            outliers['z_score'] = z_scores[outlier_mask]
+            
+            logger.info(f"Found {len(outliers)} outliers in '{column}' with z-score > {threshold}")
+            
+            return outliers.sort_values('z_score', ascending=False)
+            
+        except Exception as e:
+            raise AnalysisError(f"Failed to detect outliers: {e}")
+    
+    def get_performance_percentiles(self, column: str = 'avg_time') -> Dict[str, float]:
+        """
+        Calculate performance percentiles for the specified column.
+        
+        Args:
+            column: Column to analyze
+            
+        Returns:
+            Dictionary with percentile values
+            
+        Raises:
+            AnalysisError: If percentile calculation fails
+        """
+        if self.data is None:
+            raise AnalysisError("Data not loaded. Call load_data() first.")
+            
+        try:
+            if column not in self.data.columns:
+                raise AnalysisError(f"Column '{column}' not found in data")
+                
+            percentiles = {
+                'p5': self.data[column].quantile(0.05),
+                'p10': self.data[column].quantile(0.10),
+                'p25': self.data[column].quantile(0.25),
+                'p50': self.data[column].quantile(0.50),  # median
+                'p75': self.data[column].quantile(0.75),
+                'p90': self.data[column].quantile(0.90),
+                'p95': self.data[column].quantile(0.95),
+                'p99': self.data[column].quantile(0.99)
+            }
+            
+            return percentiles
+            
+        except Exception as e:
+            raise AnalysisError(f"Failed to calculate percentiles: {e}")
+    
+    def compare_groups(self, group_column: str, value_column: str = 'avg_time') -> pd.DataFrame:
+        """
+        Compare performance across different groups.
+        
+        Args:
+            group_column: Column to group by
+            value_column: Column to analyze
+            
+        Returns:
+            DataFrame with group comparison statistics
+            
+        Raises:
+            AnalysisError: If group comparison fails
+        """
+        if self.data is None:
+            raise AnalysisError("Data not loaded. Call load_data() first.")
+            
+        try:
+            if group_column not in self.data.columns:
+                raise AnalysisError(f"Group column '{group_column}' not found in data")
+            if value_column not in self.data.columns:
+                raise AnalysisError(f"Value column '{value_column}' not found in data")
+                
+            comparison = self.data.groupby(group_column)[value_column].agg([
+                'count', 'mean', 'median', 'std', 'min', 'max'
+            ]).round(3)
+            
+            # Add coefficient of variation (CV)
+            comparison['cv'] = (comparison['std'] / comparison['mean'] * 100).round(2)
+            
+            # Calculate relative performance (percentage of overall mean)
+            overall_mean = self.data[value_column].mean()
+            comparison['relative_performance'] = (comparison['mean'] / overall_mean * 100).round(1)
+            
+            return comparison.sort_values('mean')
+            
+        except Exception as e:
+            raise AnalysisError(f"Failed to compare groups: {e}")
+    
+    @lru_cache(maxsize=128)
+    def _cached_categorize_aces_version(self, target_colorspace: str) -> str:
+        """
+        Cached version of ACES version categorization for better performance.
+        
+        Args:
+            target_colorspace: The target colorspace string
+
+        Returns:
+            ACES version ("ACES 1.0" or "ACES 2.0")
+        """
+        return self._categorize_aces_version(target_colorspace)
+    
+    def get_data_info(self) -> Dict[str, any]:
+        """
+        Get comprehensive information about the loaded data.
+        
+        Returns:
+            Dictionary with data information
+        """
+        if self.data is None:
+            return {"status": "No data loaded"}
+            
+        info = {
+            "status": "Data loaded",
+            "shape": self.data.shape,
+            "columns": list(self.data.columns),
+            "memory_usage_mb": round(self.data.memory_usage(deep=True).sum() / 1024**2, 2),
+            "null_counts": self.data.isnull().sum().to_dict(),
+            "data_types": self.data.dtypes.to_dict(),
+            "csv_file": str(self.csv_file) if self.csv_file else None,
+            "cached_summary": self._summary_cache is not None
+        }
+        
+        return info

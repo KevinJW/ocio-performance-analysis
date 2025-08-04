@@ -11,6 +11,7 @@ __version__ = "1.0.0"
 __author__ = "OCIO Performance Analysis Team"
 
 from .analyzer import OCIOAnalyzer
+from .config import OCIOConfig, ConfigurationManager, get_config, get_config_manager
 from .data_analyzer import OCIODataAnalyzer
 from .chart_generator import OCIOChartGenerator
 from .report_generator import OCIOReportGenerator
@@ -38,6 +39,10 @@ __all__ = [
     "OCIOReportGenerator",
     "OCIOPerformanceAnalyzer",
     "OCIOChartViewer",
+    "OCIOConfig",
+    "ConfigurationManager",
+    "get_config",
+    "get_config_manager",
     "get_logger",
     "setup_logging",
     "OCIOAnalysisError",

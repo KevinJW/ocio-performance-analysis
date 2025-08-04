@@ -5,10 +5,12 @@ Orchestrates data analysis, chart generation, and report creation
 using focused, single-responsibility components.
 """
 
+import concurrent.futures
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List, Callable, Dict
 
 from .chart_generator import OCIOChartGenerator
+from .config import get_config
 from .data_analyzer import OCIODataAnalyzer
 from .exceptions import AnalysisError, ConfigurationError
 from .logging_config import get_logger
@@ -232,6 +234,207 @@ class OCIOPerformanceAnalyzer:
             
         except Exception as e:
             raise AnalysisError(f"Quick summary generation failed: {e}")
+
+    def run_parallel_analysis(self, output_dir: Path, max_workers: Optional[int] = None) -> None:
+        """
+        Run analysis with parallel processing for better performance.
+        
+        Args:
+            output_dir: Directory to save all output files
+            max_workers: Maximum number of worker threads (uses config default if None)
+        """
+        try:
+            config = get_config()
+            if not config.parallel_processing:
+                logger.info("Parallel processing disabled, falling back to sequential analysis")
+                return self.run_full_analysis(output_dir)
+                
+            if not self.data_analyzer:
+                raise ConfigurationError("No CSV file provided. Initialize with a CSV file to run analysis.")
+                
+            max_workers = max_workers or config.max_workers
+            logger.info(f"Starting parallel OCIO performance analysis with {max_workers} workers")
+            
+            # Ensure output directory exists
+            output_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Step 1: Load and analyze data (sequential - shared state)
+            logger.info("Step 1: Loading and analyzing data")
+            self.data = self.data_analyzer.load_data()
+            self.summary_data = self.data_analyzer.summarize_by_filename()
+            
+            # Step 2: Generate comparisons (can be parallelized)
+            logger.info("Step 2: Generating performance comparisons (parallel)")
+            
+            comparison_tasks = [
+                ('cpu_os', self.data_analyzer.find_cpu_os_comparisons),
+                ('ocio', self.data_analyzer.find_ocio_version_comparisons),
+                ('all_ocio', self.data_analyzer.find_all_ocio_version_comparisons)
+            ]
+            
+            comparison_results = {}
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+                future_to_name = {
+                    executor.submit(task): name 
+                    for name, task in comparison_tasks
+                }
+                
+                for future in concurrent.futures.as_completed(future_to_name):
+                    name = future_to_name[future]
+                    try:
+                        comparison_results[name] = future.result()
+                        logger.info(f"Completed {name} comparisons")
+                    except Exception as e:
+                        logger.error(f"Failed to generate {name} comparisons: {e}")
+                        comparison_results[name] = None
+            
+            # Step 3: Generate outputs in parallel
+            logger.info("Step 3: Generating charts and reports (parallel)")
+            
+            output_tasks = []
+            
+            # Chart generation tasks
+            chart_tasks = [
+                ('summary_chart', self._create_summary_chart, (output_dir,)),
+                ('comparison_charts', self._create_comparison_charts, 
+                 (output_dir, comparison_results['cpu_os'], comparison_results['ocio'], 
+                  comparison_results['all_ocio']))
+            ]
+            
+            # Report generation tasks  
+            report_tasks = [
+                ('summary_report', self._create_summary_report, (output_dir,)),
+                ('comparison_reports', self._create_comparison_reports,
+                 (output_dir, comparison_results['cpu_os'], comparison_results['ocio']))
+            ]
+            
+            output_tasks.extend(chart_tasks + report_tasks)
+            
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+                future_to_task = {
+                    executor.submit(task_func, *args): task_name
+                    for task_name, task_func, args in output_tasks
+                }
+                
+                for future in concurrent.futures.as_completed(future_to_task):
+                    task_name = future_to_task[future]
+                    try:
+                        future.result()
+                        logger.info(f"Completed {task_name}")
+                    except Exception as e:
+                        logger.error(f"Failed to generate {task_name}: {e}")
+            
+            logger.info(f"✅ Parallel analysis complete. Results saved to: {output_dir}")
+            
+        except Exception as e:
+            raise AnalysisError(f"Parallel analysis failed: {e}")
+    
+    def _create_summary_chart(self, output_dir: Path) -> None:
+        """Create summary chart (helper for parallel execution)."""
+        summary_plot_path = output_dir / "summary_analysis.png"
+        self.chart_generator.create_summary_plot(self.summary_data, summary_plot_path)
+    
+    def _create_comparison_charts(self, output_dir: Path, cpu_os_comparisons, 
+                                ocio_comparisons, all_ocio_comparisons) -> None:
+        """Create comparison charts (helper for parallel execution)."""
+        if cpu_os_comparisons is not None and not cpu_os_comparisons.empty:
+            cpu_os_plot_path = output_dir / "cpu_os_comparison.png"
+            self.chart_generator.create_comparison_plot(
+                cpu_os_comparisons, "CPU/OS Performance Comparison", cpu_os_plot_path
+            )
+        
+        if ocio_comparisons is not None and not ocio_comparisons.empty:
+            ocio_plot_path = output_dir / "ocio_version_comparison.png"
+            self.chart_generator.create_comparison_plot(
+                ocio_comparisons, "OCIO Version Performance Comparison", ocio_plot_path
+            )
+        
+        if all_ocio_comparisons is not None and not all_ocio_comparisons.empty:
+            aces_plot_path = output_dir / "comprehensive_aces_comparison.png"
+            self.chart_generator.create_aces_comparison_plot(all_ocio_comparisons, aces_plot_path)
+    
+    def _create_summary_report(self, output_dir: Path) -> None:
+        """Create summary report (helper for parallel execution)."""
+        summary_report_path = output_dir / "analysis_summary.txt"
+        summary_stats = self.data_analyzer.get_performance_summary()
+        self.report_generator.create_summary_report(summary_stats, summary_report_path)
+    
+    def _create_comparison_reports(self, output_dir: Path, cpu_os_comparisons, ocio_comparisons) -> None:
+        """Create comparison reports (helper for parallel execution)."""
+        if cpu_os_comparisons is not None and not cpu_os_comparisons.empty:
+            os_report_path = output_dir / "os_comparison_report.txt"
+            self.report_generator.create_comparison_report(
+                cpu_os_comparisons, "CPU/OS Comparison Report", os_report_path
+            )
+        
+        if ocio_comparisons is not None and not ocio_comparisons.empty:
+            ocio_report_path = output_dir / "ocio_version_comparison_report.txt"
+            self.report_generator.create_comparison_report(
+                ocio_comparisons, "OCIO Version Comparison Report", ocio_report_path
+            )
+    
+    def batch_process_files(self, csv_files: List[Path], output_base_dir: Path,
+                          max_workers: Optional[int] = None) -> Dict[str, bool]:
+        """
+        Process multiple CSV files in parallel.
+        
+        Args:
+            csv_files: List of CSV files to process
+            output_base_dir: Base directory for output (subdirs created per file)
+            max_workers: Maximum number of worker threads
+            
+        Returns:
+            Dictionary mapping file names to success status
+        """
+        try:
+            config = get_config()
+            max_workers = max_workers or config.max_workers
+            
+            logger.info(f"Starting batch processing of {len(csv_files)} files with {max_workers} workers")
+            
+            results = {}
+            
+            def process_single_file(csv_file: Path) -> tuple:
+                """Process a single CSV file."""
+                try:
+                    file_analyzer = OCIOPerformanceAnalyzer(csv_file)
+                    output_dir = output_base_dir / csv_file.stem
+                    
+                    if config.parallel_processing:
+                        file_analyzer.run_parallel_analysis(output_dir)
+                    else:
+                        file_analyzer.run_full_analysis(output_dir)
+                        
+                    return (csv_file.name, True, None)
+                except Exception as e:
+                    return (csv_file.name, False, str(e))
+            
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+                future_to_file = {
+                    executor.submit(process_single_file, csv_file): csv_file
+                    for csv_file in csv_files
+                }
+                
+                for future in concurrent.futures.as_completed(future_to_file):
+                    csv_file = future_to_file[future]
+                    try:
+                        file_name, success, error = future.result()
+                        results[file_name] = success
+                        if success:
+                            logger.info(f"✅ Successfully processed {file_name}")
+                        else:
+                            logger.error(f"❌ Failed to process {file_name}: {error}")
+                    except Exception as e:
+                        results[csv_file.name] = False
+                        logger.error(f"❌ Unexpected error processing {csv_file.name}: {e}")
+            
+            successful = sum(1 for success in results.values() if success)
+            logger.info(f"Batch processing complete: {successful}/{len(csv_files)} files processed successfully")
+            
+            return results
+            
+        except Exception as e:
+            raise AnalysisError(f"Batch processing failed: {e}")
 
 
 # Backward compatibility alias
