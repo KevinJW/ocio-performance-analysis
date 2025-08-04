@@ -341,32 +341,95 @@ def create_aces_impact_chart(data, output_dir):
     
     improvement_df = pd.DataFrame(aces_improvements)
     
-    # Create bar chart
-    plt.figure(figsize=(10, 6))
+    # Create side-by-side comparison chart
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
     
-    bars = plt.bar(improvement_df['ACES Version'], improvement_df['Improvement %'],
-                   color=['#4CAF50', '#2196F3'], alpha=0.8, width=0.6)
+    # Extract data for both OS releases
+    aces_versions = improvement_df['ACES Version'].tolist()
+    r7_values = improvement_df['r7 Mean (ms)'].tolist()
+    r9_values = improvement_df['r9 Mean (ms)'].tolist()
     
-    # Add value labels
-    for bar in bars:
-        height = bar.get_height()
-        plt.text(bar.get_x() + bar.get_width()/2., height + 0.5,
-                f'{height:.1f}%', ha='center', va='bottom', 
-                fontsize=14, fontweight='bold')
+    # Calculate shared Y-axis limits (add 10% padding)
+    all_values = r7_values + r9_values
+    y_min = 0
+    y_max = max(all_values) * 1.15
     
-    # Add baseline performance info
-    for i, row in improvement_df.iterrows():
-        plt.text(i, -5, f'r7: {row["r7 Mean (ms)"]:.0f}ms\nr9: {row["r9 Mean (ms)"]:.0f}ms',
-                ha='center', va='top', fontsize=10, style='italic')
+    # Left chart: r7 Performance
+    bars_r7 = ax1.bar(aces_versions, r7_values, 
+                      color=['#FF6B6B', '#FF8E53'], alpha=0.8, width=0.6)
     
-    plt.xlabel('ACES Version', fontsize=12, fontweight='bold')
-    plt.ylabel('Performance Improvement (%)', fontsize=12, fontweight='bold')
-    plt.title('OS Release Impact by ACES Version\n(r7 → r9 Improvement)', 
-              fontsize=14, fontweight='bold')
-    plt.grid(axis='y', alpha=0.3)
-    plt.ylim(bottom=-15)  # Make room for baseline info
+    # Add value labels for r7
+    for bar, val in zip(bars_r7, r7_values):
+        ax1.text(bar.get_x() + bar.get_width()/2., bar.get_height() + y_max*0.02,
+                f'{val:.1f} ms', ha='center', va='bottom', 
+                fontsize=12, fontweight='bold')
+    
+    # Add sample counts for r7
+    r7_counts = improvement_df['r7 Count'].tolist()
+    for i, count in enumerate(r7_counts):
+        ax1.text(i, y_max*0.85, f'n={count}', ha='center', va='center',
+                fontsize=10, style='italic', 
+                bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.7))
+    
+    ax1.set_xlabel('ACES Version', fontsize=12, fontweight='bold')
+    ax1.set_ylabel('Performance (ms)', fontsize=12, fontweight='bold')
+    ax1.set_title('r7 Performance\n(Lower is Better)', fontsize=14, fontweight='bold')
+    ax1.set_ylim(y_min, y_max)
+    ax1.grid(axis='y', alpha=0.3)
+    
+    # Right chart: r9 Performance  
+    bars_r9 = ax2.bar(aces_versions, r9_values,
+                      color=['#4ECDC4', '#45B7D1'], alpha=0.8, width=0.6)
+    
+    # Add value labels for r9
+    for bar, val in zip(bars_r9, r9_values):
+        ax2.text(bar.get_x() + bar.get_width()/2., bar.get_height() + y_max*0.02,
+                f'{val:.1f} ms', ha='center', va='bottom', 
+                fontsize=12, fontweight='bold')
+    
+    # Add sample counts for r9
+    r9_counts = improvement_df['r9 Count'].tolist()
+    for i, count in enumerate(r9_counts):
+        ax2.text(i, y_max*0.85, f'n={count}', ha='center', va='center',
+                fontsize=10, style='italic',
+                bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.7))
+    
+    ax2.set_xlabel('ACES Version', fontsize=12, fontweight='bold')
+    ax2.set_ylabel('Performance (ms)', fontsize=12, fontweight='bold')
+    ax2.set_title('r9 Performance\n(Lower is Better)', fontsize=14, fontweight='bold')
+    ax2.set_ylim(y_min, y_max)
+    ax2.grid(axis='y', alpha=0.3)
+    
+    # Add improvement annotations between charts
+    for i, (aces_ver, improvement) in enumerate(zip(aces_versions, improvement_df['Improvement %'])):
+        # Add improvement arrow and text in the middle
+        mid_x = 0.5
+        y_pos = 0.7 - (i * 0.2)  # Stagger vertically
+        
+        fig.text(mid_x, y_pos, f'{aces_ver}\n{improvement:.1f}% faster', 
+                ha='center', va='center', fontsize=12, fontweight='bold',
+                bbox=dict(boxstyle="round,pad=0.5", facecolor='lightgreen' if improvement > 0 else 'lightcoral', alpha=0.8),
+                transform=fig.transFigure)
+        
+        # Add arrow pointing from r7 to r9 using matplotlib.patches.FancyArrowPatch
+        from matplotlib.patches import FancyArrowPatch
+        arrow = FancyArrowPatch((0.15, y_pos), (0.85, y_pos),
+                               arrowstyle='->', mutation_scale=20, 
+                               color='darkgreen' if improvement > 0 else 'darkred',
+                               linewidth=2, transform=fig.transFigure)
+        fig.patches.append(arrow)
+    
+    # Overall title
+    plt.suptitle('OS Release Performance Comparison: r7 vs r9 by ACES Version', 
+                 fontsize=16, fontweight='bold', y=0.95)
+    
+    # Add overall improvement summary
+    overall_improvement = improvement_df['Improvement %'].mean()
+    fig.text(0.5, 0.02, f'Average Performance Improvement: {overall_improvement:.1f}%', 
+             ha='center', va='bottom', fontsize=12, fontweight='bold', style='italic')
     
     plt.tight_layout()
+    plt.subplots_adjust(top=0.85, bottom=0.15)
     plt.savefig(output_dir / 'aces_version_impact.png', dpi=300, bbox_inches='tight')
     plt.close()
     

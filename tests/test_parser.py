@@ -8,8 +8,8 @@ from pathlib import Path
 
 import pytest
 
-from ocio_performance_analysis.exceptions import DataValidationError
-from ocio_performance_analysis.parser import OCIOTestParser, OCIOTestResult
+from src.ocio_performance_analysis.exceptions import DataValidationError
+from src.ocio_performance_analysis.parser import OCIOTestParser, OCIOTestResult
 
 
 class TestOCIOTestParser:
